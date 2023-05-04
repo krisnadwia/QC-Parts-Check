@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "70539957511",
+    "project_id": "qc-parts-check",
+    "storage_bucket": "qc-parts-check.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70539957511:android:752953331a9a31fcdde1a2",
+        "android_client_info": {
+          "package_name": "com.krisnadwia.qc_parts_check"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70539957511-m956185ejkn7prnq3g176l19ii40g3nl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqbZSXFzUGmmsh6Js3KEZ02PZQJn61XHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70539957511-m956185ejkn7prnq3g176l19ii40g3nl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
