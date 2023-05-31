@@ -211,41 +211,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Material(
-                          color: const Color(0xb3a18b3b),
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xb3a18b3b),
                             borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const MetalHomeScreen(),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const MetalHomeScreen(),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Hero(
+                                      tag: "img-metal-part",
+                                      child: Image.asset(
+                                        "assets/images/img-metal-part.png",
+                                        width: 100,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text(
+                                      "Metal Parts",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Hero(
-                                    tag: "img-metal-part",
-                                    child: Image.asset(
-                                      "assets/images/img-metal-part.png",
-                                      width: 100,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "Metal Parts",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),
@@ -253,41 +262,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Material(
-                          color: const Color(0xffc2ad29),
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xffc2ad29),
                             borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const PlasticHomeScreen(),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const PlasticHomeScreen(),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Hero(
+                                      tag: "img-plastic-part",
+                                      child: Image.asset(
+                                        "assets/images/img-plastic-part.png",
+                                        width: 80,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text(
+                                      "Plastic Parts",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Hero(
-                                    tag: "img-plastic-part",
-                                    child: Image.asset(
-                                      "assets/images/img-plastic-part.png",
-                                      width: 80,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "Plastic Parts",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),
@@ -295,41 +313,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Material(
-                          color: const Color(0xffcebd54),
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xffcebd54),
                             borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const GeneralHomeScreen(),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const GeneralHomeScreen(),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(6),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Hero(
+                                      tag: "img-general-part",
+                                      child: Image.asset(
+                                        "assets/images/img-general-part.png",
+                                        width: 100,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text(
+                                      "General Parts",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Hero(
-                                    tag: "img-general-part",
-                                    child: Image.asset(
-                                      "assets/images/img-general-part.png",
-                                      width: 100,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "General Parts",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),
@@ -337,41 +364,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Material(
-                          color: const Color(0xffbad347),
-                          borderRadius: BorderRadius.circular(20),
-                          child: InkWell(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xffbad347),
                             borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const ElectricHomeScreen(),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const ElectricHomeScreen(),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Hero(
+                                      tag: "img-electric-part",
+                                      child: Image.asset(
+                                        "assets/images/img-electric-part.png",
+                                        width: 100,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    const Text(
+                                      "Electric Parts",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Hero(
-                                    tag: "img-electric-part",
-                                    child: Image.asset(
-                                      "assets/images/img-electric-part.png",
-                                      width: 100,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "Electric Parts",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),

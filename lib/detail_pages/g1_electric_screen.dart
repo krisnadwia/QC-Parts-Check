@@ -135,744 +135,756 @@ class _G1ElectricScreenState extends State<G1ElectricScreen> {
     }
 
     await showModalBottomSheet(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.yellow,
+      enableDrag: true,
+      useSafeArea: true,
+      showDragHandle: true,
       isScrollControlled: true,
       context: context,
       builder: (BuildContext ctx) {
         return Padding(
           padding: EdgeInsets.only(
-            top: 50,
-            left: 5,
-            right: 5,
             // Prevent the soft keyboard from covering text fields
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 5,
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
-                  tooltip: "Tutup",
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const Center(
-                  child: Text(
-                    "Tambah/Update Data",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          size: 30,
+                        ),
+                        tooltip: "Tutup",
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _namaPartController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nama Part",
-                    hintText: "Masukkan Nama Part",
-                    suffixIcon: PopupMenuButton<String>(
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                      ),
-                      tooltip: "Pilih",
-                      onSelected: (String value) {
-                        _namaPartController.text = value;
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return itemsNamaPart.map<PopupMenuItem<String>>((String value) {
-                          return PopupMenuItem(
-                            value: value,
-                            child: Text(
-                              value,
-                            ),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _namaSupplierController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nama Supplier",
-                    hintText: "Masukkan Nama Supplier",
-                    suffixIcon: PopupMenuButton<String>(
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                      ),
-                      tooltip: "Pilih",
-                      onSelected: (String value) {
-                        _namaSupplierController.text = value;
-                      },
-                      itemBuilder: (BuildContext context) {
-                        return itemsNamaSupplier.map<PopupMenuItem<String>>((String value) {
-                          return PopupMenuItem(
-                            value: value,
-                            child: Text(
-                              value,
-                            ),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _tanggalKedatanganController,
-                  // Editing controller of this TextField
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Pilih",
-                      icon: const Icon(
-                        Icons.calendar_today,
-                      ),
-                      onPressed: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          // DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101),
-                        );
-
-                        if (pickedDate != null) {
-                          if (kDebugMode) {
-                            print(pickedDate);
-                          } // pickedDate output format => 2021-03-10 00:00:00.000
-                          String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
-                          if (kDebugMode) {
-                            print(formattedDate);
-                          } // Formatted date output using intl package =>  2021-03-16
-                          // You can implement different kind of Date Format here according to your requirement
-
-                          setState(() {
-                            _tanggalKedatanganController.text = formattedDate; // Set output date to TextField value.
-                          });
-                        } else {
-                          if (kDebugMode) {
-                            print("Date is not selected");
-                          }
-                        }
-                      },
-                    ),
-                    hintText: "Masukkan Tanggal Kedatangan",
-                    labelText: "Tanggal Kedatangan", // Label text of field
-                  ),
-                  readOnly: true, // Set it true, so that user will not able to edit text
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ], // Only numbers can be entered
-                  keyboardType: TextInputType.number,
-                  controller: _jumlahTotalController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Jumlah Total",
-                    hintText: "Masukkan Jumlah Total",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _tanggalPemeriksaanController,
-                  // Editing controller of this TextField
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Pilih",
-                      icon: const Icon(
-                        Icons.calendar_today_outlined,
-                      ),
-                      onPressed: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          // DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101),
-                        );
-
-                        if (pickedDate != null) {
-                          if (kDebugMode) {
-                            print(pickedDate);
-                          } // pickedDate output format => 2021-03-10 00:00:00.000
-                          String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
-                          if (kDebugMode) {
-                            print(formattedDate);
-                          } // Formatted date output using intl package =>  2021-03-16
-                          // You can implement different kind of Date Format here according to your requirement
-
-                          setState(() {
-                            _tanggalPemeriksaanController.text = formattedDate; // Set output date to TextField value.
-                          });
-                        } else {
-                          if (kDebugMode) {
-                            print("Date is not selected");
-                          }
-                        }
-                      },
-                    ),
-                    hintText: "Masukkan Tanggal Pemeriksaan",
-                    labelText: "Tanggal Pemeriksaan", // Label text of field
-                  ),
-                  readOnly: true, // Set it true, so that user will not able to edit text
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ], // Only numbers can be entered
-                  keyboardType: TextInputType.number,
-                  controller: _qtyOkController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Calculate",
-                      icon: const Icon(
-                        Icons.calculate_outlined,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const MyCalculator(),
+                      const Center(
+                        child: Text(
+                          "Tambah/Update Data",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
-                        );
-                      },
-                    ),
-                    labelText: "Qty (OK)",
-                    hintText: "Masukkan Jumlah OK",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ], // Only numbers can be entered
-                  keyboardType: TextInputType.number,
-                  controller: _qtyNgController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Calculate",
-                      icon: const Icon(
-                        Icons.calculate_outlined,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const MyCalculator(),
-                          ),
-                        );
-                      },
-                    ),
-                    labelText: "Qty (NG)",
-                    hintText: "Masukkan Jumlah NG",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _problemController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Problem",
-                    hintText: "Masukkan Keterangan Problem",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _urlController,
-                  // Editing controller of this TextField
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Upload",
-                      icon: const Icon(
-                        Icons.cloud_upload,
-                      ),
-                      onPressed: () async {
-                        _launchURL();
-                      },
-                    ),
-                    hintText: "Masukkan Link URL",
-                    labelText: "URL", // Label text of field
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _tanggalReturnController,
-                  // Editing controller of this TextField
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    suffixIcon: IconButton(
-                      tooltip: "Pilih",
-                      icon: const Icon(
-                        Icons.calendar_month_outlined,
-                      ),
-                      onPressed: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          // DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101),
-                        );
-
-                        if (pickedDate != null) {
-                          if (kDebugMode) {
-                            print(pickedDate);
-                          } // pickedDate output format => 2021-03-10 00:00:00.000
-                          String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
-                          if (kDebugMode) {
-                            print(formattedDate);
-                          } // Formatted date output using intl package =>  2021-03-16
-                          // You can implement different kind of Date Format here according to your requirement
-
-                          setState(() {
-                            _tanggalReturnController.text = formattedDate; // Set output date to TextField value.
-                          });
-                        } else {
-                          if (kDebugMode) {
-                            print("Date is not selected");
-                          }
-                        }
-                      },
-                    ),
-                    hintText: "Masukkan Tanggal Return",
-                    labelText: "Tanggal Return", // Label text of field
-                  ),
-                  readOnly: true, // Set it true, so that user will not able to edit text
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                    ),
-                    child: Text(
-                      action == "create"
-                          ? "Create"
-                          : "Update",
-                      style: TextStyle(
-                        color: action == "create"
-                            ? Colors.blue
-                            : Colors.indigo,
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                    onPressed: () async {
-                      HapticFeedback.vibrate();
-                      final String namaPart = _namaPartController.text;
-                      final String namaSupplier = _namaSupplierController.text;
-                      final String tanggalKedatangan = _tanggalKedatanganController.text;
-                      final num? jumlahTotal = num.tryParse(_jumlahTotalController.text);
-                      final String tanggalPemeriksaan = _tanggalPemeriksaanController.text;
-                      final num? qtyOk = num.tryParse(_qtyOkController.text);
-                      final num? qtyNg = num.tryParse(_qtyNgController.text);
-                      final String problem = _problemController.text;
-                      final String url = _urlController.text;
-                      final String tanggalReturn = _tanggalReturnController.text;
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _namaPartController,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nama Part",
+                          hintText: "Masukkan Nama Part",
+                          suffixIcon: PopupMenuButton<String>(
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                            ),
+                            tooltip: "Pilih",
+                            onSelected: (String value) {
+                              _namaPartController.text = value;
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return itemsNamaPart.map<PopupMenuItem<String>>((String value) {
+                                return PopupMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                  ),
+                                );
+                              }).toList();
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _namaSupplierController,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nama Supplier",
+                          hintText: "Masukkan Nama Supplier",
+                          suffixIcon: PopupMenuButton<String>(
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                            ),
+                            tooltip: "Pilih",
+                            onSelected: (String value) {
+                              _namaSupplierController.text = value;
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return itemsNamaSupplier.map<PopupMenuItem<String>>((String value) {
+                                return PopupMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                  ),
+                                );
+                              }).toList();
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _tanggalKedatanganController,
+                        // Editing controller of this TextField
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Pilih",
+                            icon: const Icon(
+                              Icons.calendar_today,
+                            ),
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                // DateTime.now() - not to allow to choose before today.
+                                lastDate: DateTime(2101),
+                              );
 
-                      if (action == "create") {
-                        // Persist a new product to Firestore
-                        await _g1ElectricParts.add({
-                          "namaPart": namaPart,
-                          "namaSupplier": namaSupplier,
-                          "tanggalKedatangan": tanggalKedatangan,
-                          "jumlahTotal": jumlahTotal,
-                          "tanggalPemeriksaan": tanggalPemeriksaan,
-                          "qtyOk": qtyOk,
-                          "qtyNg": qtyNg,
-                          "problem": problem,
-                          "url": url,
-                          "tanggalReturn": tanggalReturn,
-                        });
-                      }
+                              if (pickedDate != null) {
+                                if (kDebugMode) {
+                                  print(pickedDate);
+                                } // pickedDate output format => 2021-03-10 00:00:00.000
+                                String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                if (kDebugMode) {
+                                  print(formattedDate);
+                                } // Formatted date output using intl package =>  2021-03-16
+                                // You can implement different kind of Date Format here according to your requirement
 
-                      if (action == "update") {
-                        // Update the product
-                        await _g1ElectricParts
-                            .doc(documentSnapshot!.id)
-                            .set({
-                          "namaPart": namaPart,
-                          "namaSupplier": namaSupplier,
-                          "tanggalKedatangan": tanggalKedatangan,
-                          "jumlahTotal": jumlahTotal,
-                          "tanggalPemeriksaan": tanggalPemeriksaan,
-                          "qtyOk": qtyOk,
-                          "qtyNg": qtyNg,
-                          "problem": problem,
-                          "url": url,
-                          "tanggalReturn": tanggalReturn,
-                        });
-                      }
+                                setState(() {
+                                  _tanggalKedatanganController.text = formattedDate; // Set output date to TextField value.
+                                });
+                              } else {
+                                if (kDebugMode) {
+                                  print("Date is not selected");
+                                }
+                              }
+                            },
+                          ),
+                          hintText: "Masukkan Tanggal Kedatangan",
+                          labelText: "Tanggal Kedatangan", // Label text of field
+                        ),
+                        readOnly: true, // Set it true, so that user will not able to edit text
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ], // Only numbers can be entered
+                        keyboardType: TextInputType.number,
+                        controller: _jumlahTotalController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Jumlah Total",
+                          hintText: "Masukkan Jumlah Total",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _tanggalPemeriksaanController,
+                        // Editing controller of this TextField
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Pilih",
+                            icon: const Icon(
+                              Icons.calendar_today_outlined,
+                            ),
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                // DateTime.now() - not to allow to choose before today.
+                                lastDate: DateTime(2101),
+                              );
 
-                      // Show a snackbar
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: action == "create"
-                              ? Colors.yellow
-                              : Colors.grey,
-                          content: Text(
+                              if (pickedDate != null) {
+                                if (kDebugMode) {
+                                  print(pickedDate);
+                                } // pickedDate output format => 2021-03-10 00:00:00.000
+                                String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                if (kDebugMode) {
+                                  print(formattedDate);
+                                } // Formatted date output using intl package =>  2021-03-16
+                                // You can implement different kind of Date Format here according to your requirement
+
+                                setState(() {
+                                  _tanggalPemeriksaanController.text = formattedDate; // Set output date to TextField value.
+                                });
+                              } else {
+                                if (kDebugMode) {
+                                  print("Date is not selected");
+                                }
+                              }
+                            },
+                          ),
+                          hintText: "Masukkan Tanggal Pemeriksaan",
+                          labelText: "Tanggal Pemeriksaan", // Label text of field
+                        ),
+                        readOnly: true, // Set it true, so that user will not able to edit text
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ], // Only numbers can be entered
+                        keyboardType: TextInputType.number,
+                        controller: _qtyOkController,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Calculate",
+                            icon: const Icon(
+                              Icons.calculate_outlined,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const MyCalculator(),
+                                ),
+                              );
+                            },
+                          ),
+                          labelText: "Qty (OK)",
+                          hintText: "Masukkan Jumlah OK",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ], // Only numbers can be entered
+                        keyboardType: TextInputType.number,
+                        controller: _qtyNgController,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Calculate",
+                            icon: const Icon(
+                              Icons.calculate_outlined,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const MyCalculator(),
+                                ),
+                              );
+                            },
+                          ),
+                          labelText: "Qty (NG)",
+                          hintText: "Masukkan Jumlah NG",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _problemController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Problem",
+                          hintText: "Masukkan Keterangan Problem",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _urlController,
+                        // Editing controller of this TextField
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Upload",
+                            icon: const Icon(
+                              Icons.cloud_upload,
+                            ),
+                            onPressed: () async {
+                              _launchURL();
+                            },
+                          ),
+                          hintText: "Masukkan Link URL",
+                          labelText: "URL", // Label text of field
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _tanggalReturnController,
+                        // Editing controller of this TextField
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(20),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          suffixIcon: IconButton(
+                            tooltip: "Pilih",
+                            icon: const Icon(
+                              Icons.calendar_month_outlined,
+                            ),
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                // DateTime.now() - not to allow to choose before today.
+                                lastDate: DateTime(2101),
+                              );
+
+                              if (pickedDate != null) {
+                                if (kDebugMode) {
+                                  print(pickedDate);
+                                } // pickedDate output format => 2021-03-10 00:00:00.000
+                                String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                if (kDebugMode) {
+                                  print(formattedDate);
+                                } // Formatted date output using intl package =>  2021-03-16
+                                // You can implement different kind of Date Format here according to your requirement
+
+                                setState(() {
+                                  _tanggalReturnController.text = formattedDate; // Set output date to TextField value.
+                                });
+                              } else {
+                                if (kDebugMode) {
+                                  print("Date is not selected");
+                                }
+                              }
+                            },
+                          ),
+                          hintText: "Masukkan Tanggal Return",
+                          labelText: "Tanggal Return", // Label text of field
+                        ),
+                        readOnly: true, // Set it true, so that user will not able to edit text
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 50,
+                        child: OutlinedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                          ),
+                          child: Text(
                             action == "create"
-                                ? "Successfully create data!"
-                                : "Successfully update data!",
-                            style: const TextStyle(
-                              color: Colors.black,
+                                ? "Create"
+                                : "Update",
+                            style: TextStyle(
+                              color: action == "create"
+                                  ? Colors.blue
+                                  : Colors.indigo,
                             ),
                           ),
+                          onPressed: () async {
+                            HapticFeedback.vibrate();
+                            final String namaPart = _namaPartController.text;
+                            final String namaSupplier = _namaSupplierController.text;
+                            final String tanggalKedatangan = _tanggalKedatanganController.text;
+                            final num? jumlahTotal = num.tryParse(_jumlahTotalController.text);
+                            final String tanggalPemeriksaan = _tanggalPemeriksaanController.text;
+                            final num? qtyOk = num.tryParse(_qtyOkController.text);
+                            final num? qtyNg = num.tryParse(_qtyNgController.text);
+                            final String problem = _problemController.text;
+                            final String url = _urlController.text;
+                            final String tanggalReturn = _tanggalReturnController.text;
+
+                            if (action == "create") {
+                              // Persist a new product to Firestore
+                              await _g1ElectricParts.add({
+                                "namaPart": namaPart,
+                                "namaSupplier": namaSupplier,
+                                "tanggalKedatangan": tanggalKedatangan,
+                                "jumlahTotal": jumlahTotal,
+                                "tanggalPemeriksaan": tanggalPemeriksaan,
+                                "qtyOk": qtyOk,
+                                "qtyNg": qtyNg,
+                                "problem": problem,
+                                "url": url,
+                                "tanggalReturn": tanggalReturn,
+                              });
+                            }
+
+                            if (action == "update") {
+                              // Update the product
+                              await _g1ElectricParts
+                                  .doc(documentSnapshot!.id)
+                                  .set({
+                                "namaPart": namaPart,
+                                "namaSupplier": namaSupplier,
+                                "tanggalKedatangan": tanggalKedatangan,
+                                "jumlahTotal": jumlahTotal,
+                                "tanggalPemeriksaan": tanggalPemeriksaan,
+                                "qtyOk": qtyOk,
+                                "qtyNg": qtyNg,
+                                "problem": problem,
+                                "url": url,
+                                "tanggalReturn": tanggalReturn,
+                              });
+                            }
+
+                            // Show a snackbar
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: action == "create"
+                                    ? Colors.yellow
+                                    : Colors.grey,
+                                content: Text(
+                                  action == "create"
+                                      ? "Successfully create data!"
+                                      : "Successfully update data!",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            );
+
+                            // Clear the text fields
+                            _namaPartController.text = "";
+                            _namaSupplierController.text = "";
+                            _tanggalKedatanganController.text = "";
+                            _jumlahTotalController.text = "0";
+                            _tanggalPemeriksaanController.text = "";
+                            _qtyOkController.text = "0";
+                            _qtyNgController.text = "0";
+                            _problemController.text = "";
+                            _urlController.text = "";
+                            _tanggalReturnController.text = "";
+
+                            if (!mounted) return;
+                            // Hide the bottom sheet
+                            Navigator.of(context).pop();
+                          },
                         ),
-                      );
-
-                      // Clear the text fields
-                      _namaPartController.text = "";
-                      _namaSupplierController.text = "";
-                      _tanggalKedatanganController.text = "";
-                      _jumlahTotalController.text = "0";
-                      _tanggalPemeriksaanController.text = "";
-                      _qtyOkController.text = "0";
-                      _qtyNgController.text = "0";
-                      _problemController.text = "";
-                      _urlController.text = "";
-                      _tanggalReturnController.text = "";
-
-                      if (!mounted) return;
-                      // Hide the bottom sheet
-                      Navigator.of(context).pop();
-                    },
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -1162,9 +1174,9 @@ class _G1ElectricScreenState extends State<G1ElectricScreen> {
                       children: [
                         Row(
                           children: [
-                            Column(
+                            const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
                                   "Nama Part",
                                   style: TextStyle(
@@ -1227,8 +1239,8 @@ class _G1ElectricScreenState extends State<G1ElectricScreen> {
                                 ),
                               ],
                             ),
-                            Column(
-                              children: const [
+                            const Column(
+                              children: [
                                 Text(
                                   " : ",
                                 ),
@@ -1305,6 +1317,10 @@ class _G1ElectricScreenState extends State<G1ElectricScreen> {
                               padding: const EdgeInsets.all(8),
                               child: Container(
                                 decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
                                   color: Colors.white60,
                                   borderRadius: BorderRadius.circular(10),
                                 ),

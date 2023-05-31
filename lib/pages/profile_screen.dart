@@ -44,182 +44,194 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     await showModalBottomSheet(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.yellow,
+      enableDrag: true,
+      useSafeArea: true,
+      showDragHandle: true,
       isScrollControlled: true,
       context: context,
       builder: (BuildContext ctx) {
         return Padding(
           padding: EdgeInsets.only(
-            top: 30,
-            left: 5,
-            right: 5,
             // Prevent the soft keyboard from covering text fields
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 5,
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
-                  tooltip: "Tutup",
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const Center(
-                  child: Text(
-                    "Ubah Data Profil",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nama",
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ], // Only numbers can be entered
-                  keyboardType: TextInputType.number,
-                  controller: _phoneController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nomor Telepon",
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  readOnly: true,
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.redAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Email",
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      height: 50,
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          size: 30,
                         ),
-                        child: const Text(
-                          "Update",
-                          style: TextStyle(
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        onPressed: () async {
-                          HapticFeedback.vibrate();
-                          final String name = _nameController.text;
-                          final String phone = _phoneController.text;
-                          final String email = _emailController.text;
-
-                          if (action == "update") {
-                            // Update the product
-                            await _users
-                                .doc(_user?.uid) // User Unique ID
-                                .set({
-                              "name": name,
-                              "phone": phone,
-                              "email": email,
-                            });
-                          }
-
-                          // Show a snackbar
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: Colors.grey,
-                              content: Text(
-                                "Berhasil mengubah data profil!",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          );
-
-                          if (!mounted) return;
-                          // Hide the bottom sheet
+                        tooltip: "Tutup",
+                        onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                    ),
-                    const Text(
-                      "* Email tidak dapat diubah",
-                      style: TextStyle(
-                        color: Colors.red,
+                      const Center(
+                        child: Text(
+                          "Ubah Data Profil",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nama",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ], // Only numbers can be entered
+                        keyboardType: TextInputType.number,
+                        controller: _phoneController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nomor Telepon",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        readOnly: true,
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.redAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Email",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            height: 50,
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                              ),
+                              child: const Text(
+                                "Update",
+                                style: TextStyle(
+                                  color: Colors.indigo,
+                                ),
+                              ),
+                              onPressed: () async {
+                                HapticFeedback.vibrate();
+                                final String name = _nameController.text;
+                                final String phone = _phoneController.text;
+                                final String email = _emailController.text;
+
+                                if (action == "update") {
+                                  // Update the product
+                                  await _users
+                                      .doc(_user?.uid) // User Unique ID
+                                      .set({
+                                    "name": name,
+                                    "phone": phone,
+                                    "email": email,
+                                  });
+                                }
+
+                                // Show a snackbar
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.grey,
+                                    content: Text(
+                                      "Berhasil mengubah data profil!",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                );
+
+                                if (!mounted) return;
+                                // Hide the bottom sheet
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                          const Text(
+                            "* Email tidak dapat diubah",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -367,8 +379,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: const [
+                            const Row(
+                              children: [
                                 Icon(
                                   Icons.person,
                                 ),
@@ -401,8 +413,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              children: const [
+                            const Row(
+                              children: [
                                 Icon(
                                   Icons.phone,
                                 ),
@@ -435,8 +447,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              children: const [
+                            const Row(
+                              children: [
                                 Icon(
                                   Icons.mail,
                                 ),

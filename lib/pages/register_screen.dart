@@ -172,168 +172,185 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _displayName = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(20),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
-                          ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.person,
-                        ),
-                        hintText: "Masukkan Nama Anda",
-                        label: Text(
-                          "Nama",
-                        ),
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _mail = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(20),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.next,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _displayName = value;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(20),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.person,
+                                ),
+                                hintText: "Masukkan Nama Anda",
+                                label: Text(
+                                  "Nama",
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.mail,
-                        ),
-                        hintText: "Masukkan Email",
-                        label: Text(
-                          "Email",
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      // Only numbers can be entered
-                      keyboardType: TextInputType.number,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _phoneNumber = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(20),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.next,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _mail = value;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(20),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.mail,
+                                ),
+                                hintText: "Masukkan Email",
+                                label: Text(
+                                  "Email",
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.phone,
-                        ),
-                        hintText: "Masukkan Nomor Telepon",
-                        label: Text(
-                          "Nomor Telepon",
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.done,
-                      obscureText: _isObscure,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _pwd = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(20),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.next,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              // Only numbers can be entered
+                              keyboardType: TextInputType.number,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _phoneNumber = value;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(20),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                ),
+                                hintText: "Masukkan Nomor Telepon",
+                                label: Text(
+                                  "Nomor Telepon",
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        hintText: "Masukkan Password",
-                        label: const Text(
-                          "Password",
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isObscure
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.done,
+                              obscureText: _isObscure,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _pwd = value;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(20),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                hintText: "Masukkan Password",
+                                label: const Text(
+                                  "Password",
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.lock,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _isObscure = !_isObscure;
-                            });
-                          },
-                        ),
+                        ],
                       ),
                     ),
                   ),
@@ -343,7 +360,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(20),
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.all(20),

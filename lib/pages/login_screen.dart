@@ -163,96 +163,113 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       ),
                     ),
                   ),
-                  Container(
+                  const SizedBox(
                     height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _mail = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(20),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.next,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _mail = value;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(20),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.mail,
+                                ),
+                                hintText: "Masukkan Email",
+                                label: Text(
+                                  "Email",
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.mail,
-                        ),
-                        hintText: "Masukkan Email",
-                        label: Text(
-                          "Email",
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextField(
+                              textInputAction: TextInputAction.done,
+                              obscureText: _isObscure,
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              onChanged: (value) {
+                                setState(() {
+                                  _pwd = value;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(20),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.greenAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                hintText: "Masukkan Password",
+                                label: const Text(
+                                  "Password",
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.lock,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isObscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isObscure = !_isObscure;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Container(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      textInputAction: TextInputAction.done,
-                      obscureText: _isObscure,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      onChanged: (value) {
-                        setState(() {
-                          _pwd = value;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(20),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.greenAccent,
-                            width: 2,
-                          ),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                        hintText: "Masukkan Password",
-                        label: const Text(
-                          "Password",
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isObscure
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isObscure = !_isObscure;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(

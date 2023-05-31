@@ -35,196 +35,208 @@ class _G1SupplierScreenState extends State<G1SupplierScreen> {
     }
 
     await showModalBottomSheet(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.yellow,
+      enableDrag: true,
+      useSafeArea: true,
+      showDragHandle: true,
       isScrollControlled: true,
       context: context,
       builder: (BuildContext ctx) {
         return Padding(
           padding: EdgeInsets.only(
-            top: 30,
-            left: 5,
-            right: 5,
             // Prevent the soft keyboard from covering text fields
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 5,
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.close,
-                    size: 30,
-                  ),
-                  tooltip: "Tutup",
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const Center(
-                  child: Text(
-                    "Tambah/Update Data",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Wajib diisi",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _namaPartController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nama Part",
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "* Opsional",
-                      style: TextStyle(
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 6,
-                ),
-                TextField(
-                  controller: _namaSupplierController,
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(20),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.greenAccent,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Nama Supplier",
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          size: 30,
                         ),
+                        tooltip: "Tutup",
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                    ),
-                    child: Text(
-                      action == "create"
-                          ? "Create"
-                          : "Update",
-                      style: TextStyle(
-                        color: action == "create"
-                            ? Colors.blue
-                            : Colors.indigo,
-                      ),
-                    ),
-                    onPressed: () async {
-                      HapticFeedback.vibrate();
-                      final String namaPart = _namaPartController.text;
-                      final String namaSupplier = _namaSupplierController.text;
-
-                      if (action == "create") {
-                        // Persist a new product to Firestore
-                        await _g1Supplier.add({
-                          "namaPart": namaPart,
-                          "namaSupplier": namaSupplier,
-                        });
-                      }
-
-                      if (action == "update") {
-                        // Update the product
-                        await _g1Supplier
-                            .doc(documentSnapshot!.id)
-                            .set({
-                          "namaPart": namaPart,
-                          "namaSupplier": namaSupplier,
-                        });
-                      }
-
-                      // Show a snackbar
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: action == "create"
-                              ? Colors.yellow
-                              : Colors.grey,
-                          content: Text(
-                            action == "create"
-                                ? "Successfully create data!"
-                                : "Successfully update data!",
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
+                      const Center(
+                        child: Text(
+                          "Tambah/Update Data",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         ),
-                      );
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Wajib diisi",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _namaPartController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nama Part",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Text(
+                            "* Opsional",
+                            style: TextStyle(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      TextField(
+                        controller: _namaSupplierController,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(20),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.greenAccent,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          labelText: "Nama Supplier",
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 50,
+                        child: OutlinedButton(
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            action == "create"
+                                ? "Create"
+                                : "Update",
+                            style: TextStyle(
+                              color: action == "create"
+                                  ? Colors.blue
+                                  : Colors.indigo,
+                            ),
+                          ),
+                          onPressed: () async {
+                            HapticFeedback.vibrate();
+                            final String namaPart = _namaPartController.text;
+                            final String namaSupplier = _namaSupplierController.text;
 
-                      // Clear the text fields
-                      _namaPartController.text = "";
-                      _namaSupplierController.text = "";
+                            if (action == "create") {
+                              // Persist a new product to Firestore
+                              await _g1Supplier.add({
+                                "namaPart": namaPart,
+                                "namaSupplier": namaSupplier,
+                              });
+                            }
 
-                      if (!mounted) return;
-                      // Hide the bottom sheet
-                      Navigator.of(context).pop();
-                    },
+                            if (action == "update") {
+                              // Update the product
+                              await _g1Supplier
+                                  .doc(documentSnapshot!.id)
+                                  .set({
+                                "namaPart": namaPart,
+                                "namaSupplier": namaSupplier,
+                              });
+                            }
+
+                            // Show a snackbar
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: action == "create"
+                                    ? Colors.yellow
+                                    : Colors.grey,
+                                content: Text(
+                                  action == "create"
+                                      ? "Successfully create data!"
+                                      : "Successfully update data!",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            );
+
+                            // Clear the text fields
+                            _namaPartController.text = "";
+                            _namaSupplierController.text = "";
+
+                            if (!mounted) return;
+                            // Hide the bottom sheet
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );

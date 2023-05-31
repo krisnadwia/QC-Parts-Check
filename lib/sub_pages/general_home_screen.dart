@@ -132,55 +132,64 @@ class _GeneralHomeScreenState extends State<GeneralHomeScreen> with TickerProvid
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Material(
-                      color: const Color(0xa69fe512),
-                      borderRadius: BorderRadius.circular(20),
-                      child: InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      child: Material(
+                        color: const Color(0xa69fe512),
                         borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const G1GeneralScreen(),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 12,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const G1GeneralScreen(),
                               ),
-                              Center(
-                                child: ScaleTransition(
-                                  scale: _animation,
-                                  child: Image.asset(
-                                    "assets/images/img-g1.png",
-                                    width: 120,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Center(
+                                  child: ScaleTransition(
+                                    scale: _animation,
+                                    child: Image.asset(
+                                      "assets/images/img-g1.png",
+                                      width: 120,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Hero(
-                                tag: "gesits-logo-g1",
-                                child: Image.asset(
-                                  "assets/images/gesits-logo.png",
-                                  width: 80,
+                                const SizedBox(
+                                  height: 20,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Text(
-                                "G1",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                Hero(
+                                  tag: "gesits-logo-g1",
+                                  child: Image.asset(
+                                    "assets/images/gesits-logo.png",
+                                    width: 80,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  "G1",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -188,52 +197,61 @@ class _GeneralHomeScreenState extends State<GeneralHomeScreen> with TickerProvid
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Material(
-                      color: const Color(0xa6a5b007),
-                      borderRadius: BorderRadius.circular(20),
-                      child: InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      child: Material(
+                        color: const Color(0xa6a5b007),
                         borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RayaGeneralScreen(),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            children: [
-                              Center(
-                                child: ScaleTransition(
-                                  scale: _animation,
-                                  child: Image.asset(
-                                    "assets/images/img-raya.png",
-                                    width: 120,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RayaGeneralScreen(),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: ScaleTransition(
+                                    scale: _animation,
+                                    child: Image.asset(
+                                      "assets/images/img-raya.png",
+                                      width: 120,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Hero(
-                                tag: "gesits-logo-raya",
-                                child: Image.asset(
-                                  "assets/images/gesits-logo.png",
-                                  width: 80,
+                                const SizedBox(
+                                  height: 20,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Text(
-                                "Raya",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                Hero(
+                                  tag: "gesits-logo-raya",
+                                  child: Image.asset(
+                                    "assets/images/gesits-logo.png",
+                                    width: 80,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  "Raya",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
