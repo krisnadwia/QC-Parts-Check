@@ -48,66 +48,78 @@ class AboutScreen extends StatelessWidget {
           ),
           child: ListView(
             children: [
-              Column(
+              const SizedBox(
+                height: 40,
+              ),
+              Stack(
                 children: [
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      "About Application",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.amarante(
-                        fontSize: 35,
-                        color: Colors.brown,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Center(
+                    child: Image.asset(
+                      "assets/images/as.gif",
+                      height: 400,
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      "GESITS Electric Motorcycle Parts Checking Application for Quality Control",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.amiri(
-                        fontSize: 20,
-                        color: Colors.black,
-                      ),
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "About Application",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.amarante(
+                              fontSize: 35,
+                              color: Colors.brown,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "GESITS Electric Motorcycle Parts Checking Application for Quality Control",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.amiri(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Hero(
+                                tag: "gesits-logo",
+                                child: Image.asset(
+                                  "assets/images/gesits-logo.png",
+                                  width: 200,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Hero(
+                                tag: "wima-logo",
+                                child: Image.asset(
+                                  "assets/images/wima-logo.png",
+                                  width: 200,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Hero(
-                          tag: "gesits-logo",
-                          child: Image.asset(
-                            "assets/images/gesits-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Hero(
-                          tag: "wima-logo",
-                          child: Image.asset(
-                            "assets/images/wima-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

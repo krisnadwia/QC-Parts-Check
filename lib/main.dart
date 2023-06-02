@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.brown,
       ),
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
   }

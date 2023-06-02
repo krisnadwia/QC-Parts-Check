@@ -150,22 +150,32 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
               Column(
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
+                  Stack(
+                    children: [
+                      Center(
                         child: Image.asset(
-                          "assets/images/img-registerscreen.png",
-                          width: 300,
+                          "assets/images/rs.gif",
+                          height: 250,
                         ),
                       ),
-                    ),
+                      Center(
+                        child: ScaleTransition(
+                          scale: _animation,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/img-registerscreen.png",
+                              width: 300,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,

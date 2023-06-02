@@ -151,17 +151,27 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               ),
               Column(
                 children: [
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
+                  Stack(
+                    children: [
+                      Center(
                         child: Image.asset(
-                          "assets/images/img-loginscreen.png",
-                          width: 250,
+                          "assets/images/ls.gif",
+                          height: 250,
                         ),
                       ),
-                    ),
+                      Center(
+                        child: ScaleTransition(
+                          scale: _animation,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/img-loginscreen.png",
+                              width: 250,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,

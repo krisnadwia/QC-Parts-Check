@@ -11,7 +11,7 @@ Future<bool> showLogoutPopup(context) async {
     builder: (BuildContext context) {
       return AlertDialog(
         content: SizedBox(
-          height: 90,
+          height: 120,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -19,7 +19,7 @@ Future<bool> showLogoutPopup(context) async {
                 "Apakah Anda Ingin Logout?",
               ),
               const SizedBox(
-                height: 20,
+                height: 50,
               ),
               Row(
                 children: [

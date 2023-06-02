@@ -141,31 +141,43 @@ class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderSt
                   const SizedBox(
                     height: 30,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.all(50),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.vibrate();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        "Mulai",
-                        style: TextStyle(
-                          color: Colors.white,
+                  Stack(
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/gs.gif",
+                          height: 170,
                         ),
                       ),
-                    ),
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                            top: 25,
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              backgroundColor: Colors.orange,
+                              padding: const EdgeInsets.all(50),
+                            ),
+                            onPressed: () {
+                              HapticFeedback.vibrate();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Mulai",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     height: 10,

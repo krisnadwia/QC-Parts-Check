@@ -10,7 +10,7 @@ Future<bool> showExitPopup(context) async {
     builder: (BuildContext context) {
       return AlertDialog(
         content: SizedBox(
-          height: 110,
+          height: 120,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -18,7 +18,7 @@ Future<bool> showExitPopup(context) async {
                 "Apakah Anda Ingin Menutup Aplikasi?",
               ),
               const SizedBox(
-                height: 20,
+                height: 50,
               ),
               Row(
                 children: [

@@ -181,12 +181,17 @@ class _RayaPlasticScreenState extends State<RayaPlasticScreen> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      const Center(
+                      Center(
                         child: Text(
-                          "Tambah/Update Data",
+                          action == "create"
+                              ? "Tambah Data"
+                              : "Update Data",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            color: action == "create"
+                                ? Colors.blue
+                                : Colors.indigo,
                           ),
                         ),
                       ),
@@ -1407,7 +1412,12 @@ class _RayaPlasticScreenState extends State<RayaPlasticScreen> {
                                     color: Colors.black,
                                     width: 2,
                                   ),
-                                  color: Colors.white60,
+                                  image: const DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/gradient.gif",
+                                    ),
+                                    fit: BoxFit.fill,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Container(
@@ -1493,9 +1503,10 @@ class _RayaPlasticScreenState extends State<RayaPlasticScreen> {
                                         content: SizedBox(
                                           height: 200,
                                           child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Yakin ingin menghapus data '${documentSnapshot["namaPart"]}' ?",
+                                                "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
                                               ),
                                             ],
                                           ),

@@ -71,12 +71,17 @@ class _RayaSupplierScreenState extends State<RayaSupplierScreen> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      const Center(
+                      Center(
                         child: Text(
-                          "Tambah/Update Data",
+                          action == "create"
+                              ? "Tambah Data"
+                              : "Update Data",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            color: action == "create"
+                                ? Colors.blue
+                                : Colors.indigo,
                           ),
                         ),
                       ),
@@ -467,9 +472,15 @@ class _RayaSupplierScreenState extends State<RayaSupplierScreen> {
                   child: ListTile(
                     title: Text(
                       "Nama Part: ${documentSnapshot["namaPart"]}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     subtitle: Text(
                       "Nama Supplier: ${documentSnapshot["namaSupplier"]}",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                     trailing: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -513,9 +524,10 @@ class _RayaSupplierScreenState extends State<RayaSupplierScreen> {
                                       content: SizedBox(
                                         height: 200,
                                         child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Yakin ingin menghapus data '${documentSnapshot["namaPart"]}' ?",
+                                              "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
                                             ),
                                           ],
                                         ),

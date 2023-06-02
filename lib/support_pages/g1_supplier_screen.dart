@@ -71,12 +71,17 @@ class _G1SupplierScreenState extends State<G1SupplierScreen> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      const Center(
+                      Center(
                         child: Text(
-                          "Tambah/Update Data",
+                          action == "create"
+                              ? "Tambah Data"
+                              : "Update Data",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            color: action == "create"
+                                ? Colors.blue
+                                : Colors.indigo,
                           ),
                         ),
                       ),
@@ -467,9 +472,15 @@ class _G1SupplierScreenState extends State<G1SupplierScreen> {
                   child: ListTile(
                     title: Text(
                       "Nama Part: ${documentSnapshot["namaPart"]}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     subtitle: Text(
                       "Nama Supplier: ${documentSnapshot["namaSupplier"]}",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                     trailing: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -482,7 +493,7 @@ class _G1SupplierScreenState extends State<G1SupplierScreen> {
                           child: SizedBox(
                             width: 100,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 // Press this button to edit a single product
                                 IconButton(
@@ -513,9 +524,10 @@ class _G1SupplierScreenState extends State<G1SupplierScreen> {
                                       content: SizedBox(
                                         height: 200,
                                         child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Yakin ingin menghapus data '${documentSnapshot["namaPart"]}' ?",
+                                              "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
                                             ),
                                           ],
                                         ),

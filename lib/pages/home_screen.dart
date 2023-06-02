@@ -189,22 +189,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     );
                   },
                 ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    bottom: 12,
-                  ),
-                  child: Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Image.asset(
-                          "assets/images/img-gesits-g1.png",
-                          width: 250,
+                Stack(
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        "assets/images/hs.gif",
+                        height: 300,
+                      ),
+                    ),
+                    Center(
+                      child: ScaleTransition(
+                        scale: _animation,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Image.asset(
+                            "assets/images/img-gesits-g1.png",
+                            width: 250,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 Center(
                   child: Column(
