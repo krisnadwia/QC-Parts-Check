@@ -9,6 +9,13 @@ Future<bool> showExitPopup(context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        title: const Text(
+          "Konfirmasi!",
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: SizedBox(
           height: 120,
           child: Column(

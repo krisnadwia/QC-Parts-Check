@@ -1,5 +1,5 @@
 name: qc_parts_check
-description: GESITS Electric Motorcycle Parts Checking Application for Quality Control
+description: Application for Checking and Archiving GESITS Electric Motorcycle Part Data in the Incoming Area
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -32,7 +32,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.5
@@ -46,9 +45,10 @@ dependencies:
   intl: ^0.17.0
   url_launcher: ^6.1.9
   flutter_linkify: ^5.0.2
-  flutter_simple_calculator: ^2.2.2
   pie_chart: ^5.3.2
   syncfusion_flutter_charts: ^20.4.50
+  universal_html: ^2.2.3
+  csv: ^5.0.2
 
 dev_dependencies:
   flutter_test:

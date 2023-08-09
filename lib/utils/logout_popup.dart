@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:qc_parts_check/pages/greetings_screen.dart';
+import 'package:qc_parts_check/support_pages/greetings_screen.dart';
 import 'package:qc_parts_check/utils/auth.dart';
 
 // Method to show the dialog logout screen before closing the Home Screen
@@ -10,6 +10,13 @@ Future<bool> showLogoutPopup(context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        title: const Text(
+          "Konfirmasi!",
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: SizedBox(
           height: 120,
           child: Column(
