@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:qc_parts_check/support_pages/splash_screen.dart';
 import 'package:qc_parts_check/utils/custom_scroll.dart';
 import 'package:qc_parts_check/firebase_options.dart';
@@ -11,6 +12,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await initializeDateFormatting('id_ID', null);
 
   runApp(
     const MyApp(),

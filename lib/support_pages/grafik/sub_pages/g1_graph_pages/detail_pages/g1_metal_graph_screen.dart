@@ -35,15 +35,16 @@ class _G1MetalGraphScreenState extends State<G1MetalGraphScreen> {
 
   // Fetch data from Firestore to show in the graph
   Future<void> getDataFromFireStore() async {
-    var snapShotsValue = await FirebaseFirestore
-        .instance.collection("g1_metal_parts")
+    var snapShotsValue = await FirebaseFirestore.instance
+        .collection("g1_metal_parts")
         .orderBy("tanggalPengecekan", descending: false)
         .get();
-    List<_ChartData> list = snapShotsValue.docs.map((e) => _ChartData(
-      x: e.data()["tanggalPengecekan"],
-      y: e.data()["qtyOk"],
-      y1: e.data()["qtyNg"]))
-    .toList();
+    List<_ChartData> list = snapShotsValue.docs
+        .map((e) => _ChartData(
+            x: e.data()["tanggalPengecekan"],
+            y: e.data()["qtyOk"],
+            y1: e.data()["qtyNg"]))
+        .toList();
 
     setState(() {
       chartData = list;
@@ -99,89 +100,102 @@ class _G1MetalGraphScreenState extends State<G1MetalGraphScreen> {
           ],
         ),
       ),
-
       endDrawer: Drawer(
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: const Text(
-                        "GESITS G1 Metal Parts",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          shadows: <Shadow>[
-                            Shadow(
-                              offset: Offset(1, 1),
-                              blurRadius: 2,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ],
-                          color: Colors.lightGreen,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        bottom: 12,
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/images/img-g1.png",
-                          width: 120,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            "assets/images/gesits-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            "assets/images/wima-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.cyan,
+                Color.fromARGB(
+                  200,
+                  30,
+                  220,
+                  190,
                 ),
               ],
             ),
-          ],
+          ),
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: const Text(
+                          "GESITS G1 Metal Parts",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(1, 1),
+                                blurRadius: 2,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ],
+                            color: Colors.lightGreen,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                          bottom: 12,
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            "assets/images/img-g1.png",
+                            width: 120,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/gesits-logo.png",
+                              width: 200,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/wima-logo.png",
+                              width: 200,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-
       body: SfCartesianChart(
         // Chart title
         title: ChartTitle(
           text: "x = Tanggal Pengecekan \n y = Quantity",
         ),
         // Enable legend
-        legend: Legend(
+        legend: const Legend(
           isVisible: true,
         ),
         zoomPanBehavior: _zoomPanBehavior,

@@ -1,6 +1,6 @@
 # qc_parts_check
 
-GESITS Electric Motorcycle Parts Checking Application for Quality Control
+Application for Checking and Archiving GESITS Electric Motorcycle Part Data in the Incoming Area
 
 Download this app: https://drive.google.com/drive/folders/1F4HYUtqOS3b-bjLJmVSWBEQas2z8vcKH?usp=share_link
 <p>or</p>

@@ -32,7 +32,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _roleController = TextEditingController();
 
   // Firestore collection reference
-  final CollectionReference _users = FirebaseFirestore.instance.collection("users");
+  final CollectionReference _users =
+      FirebaseFirestore.instance.collection("users");
 
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     String action = "";
@@ -274,10 +275,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xa3e8d820),
         title: const Text(
-          "Detail Profil",
+          "Profil",
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(

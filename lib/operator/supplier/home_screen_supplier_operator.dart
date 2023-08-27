@@ -10,7 +10,8 @@ class HomeScreenSupplierOperator extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeScreenSupplierOperatorState();
 }
 
-class _HomeScreenSupplierOperatorState extends State<HomeScreenSupplierOperator> with TickerProviderStateMixin {
+class _HomeScreenSupplierOperatorState extends State<HomeScreenSupplierOperator>
+    with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -38,7 +39,7 @@ class _HomeScreenSupplierOperatorState extends State<HomeScreenSupplierOperator>
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xa3e8d820),
         title: const Text(
-          "Supplier Part",
+          "Part",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -52,7 +53,6 @@ class _HomeScreenSupplierOperatorState extends State<HomeScreenSupplierOperator>
           ),
         ],
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -103,206 +103,209 @@ class _HomeScreenSupplierOperatorState extends State<HomeScreenSupplierOperator>
               const SizedBox(
                 height: 10,
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/sp.gif",
+              Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Image.asset(
+                        "assets/images/belt-engine.gif",
+                        width: 100,
+                      ),
                     ),
-                  ),
-                  Center(
-                    child: Column(
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Image.asset(
-                            "assets/images/belt-engine.gif",
-                            width: 100,
+                        Container(
+                          margin: const EdgeInsets.only(
+                            left: 60,
+                            right: 60,
+                            bottom: 20,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xa69fe512),
+                            borderRadius: BorderRadius.circular(20),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const G1SupplierScreenOperator(),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Center(
+                                      child: ScaleTransition(
+                                        scale: _animation,
+                                        child: Image.asset(
+                                          "assets/images/g1-samping.png",
+                                          width: 140,
+                                        ),
+                                      ),
+                                    ),
+                                    Hero(
+                                      tag: "gesits-logo-g1",
+                                      child: Image.asset(
+                                        "assets/images/gesits-logo.png",
+                                        width: 80,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Text(
+                                      "G1",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    FutureBuilder<QuerySnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection("g1_supplier")
+                                          .get(), // Fetch the documents in the collection
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                        }
+                                        if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        }
+                                        if (!snapshot.hasData) {
+                                          return const Text('No data found!');
+                                        }
+
+                                        int totalDocuments = snapshot.data!
+                                            .size; // Get the total number of documents
+                                        return Text(
+                                          "$totalDocuments Documents Found!",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(
-                                left: 60,
-                                right: 60,
-                                bottom: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Material(
-                                color: const Color(0xa69fe512),
-                                borderRadius: BorderRadius.circular(20),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(20),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const G1SupplierScreenOperator(),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Column(
-                                      children: [
-                                        Center(
-                                          child: ScaleTransition(
-                                            scale: _animation,
-                                            child: Image.asset(
-                                              "assets/images/g1-samping.png",
-                                              width: 140,
-                                            ),
-                                          ),
-                                        ),
-                                        Hero(
-                                          tag: "gesits-logo-g1",
-                                          child: Image.asset(
-                                            "assets/images/gesits-logo.png",
-                                            width: 80,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        const Text(
-                                          "G1",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                        FutureBuilder<QuerySnapshot>(
-                                          future: FirebaseFirestore.instance.collection("g1_supplier").get(), // Fetch the documents in the collection
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                            }
-                                            if (snapshot.hasError) {
-                                              return Text('Error: ${snapshot.error}');
-                                            }
-                                            if (!snapshot.hasData) {
-                                              return const Text('No data found!');
-                                            }
-
-                                            int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                            return Text(
-                                              "$totalDocuments Documents Found!",
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                        Container(
+                          margin: const EdgeInsets.only(
+                            left: 60,
+                            right: 60,
+                            bottom: 20,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                          child: Material(
+                            color: const Color(0xa6a5b007),
+                            borderRadius: BorderRadius.circular(20),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RayaSupplierScreenOperator(),
                                   ),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Center(
+                                      child: ScaleTransition(
+                                        scale: _animation,
+                                        child: Image.asset(
+                                          "assets/images/raya-samping.png",
+                                          width: 260,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Hero(
+                                      tag: "gesits-logo-raya",
+                                      child: Image.asset(
+                                        "assets/images/gesits-logo.png",
+                                        width: 80,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Text(
+                                      "Raya",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    FutureBuilder<QuerySnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection("raya_supplier")
+                                          .get(), // Fetch the documents in the collection
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                        }
+                                        if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        }
+                                        if (!snapshot.hasData) {
+                                          return const Text('No data found!');
+                                        }
+
+                                        int totalDocuments = snapshot.data!
+                                            .size; // Get the total number of documents
+                                        return Text(
+                                          "$totalDocuments Documents Found!",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                left: 60,
-                                right: 60,
-                                bottom: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Material(
-                                color: const Color(0xa6a5b007),
-                                borderRadius: BorderRadius.circular(20),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(20),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const RayaSupplierScreenOperator(),
-                                      ),
-                                    );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Center(
-                                          child: ScaleTransition(
-                                            scale: _animation,
-                                            child: Image.asset(
-                                              "assets/images/raya-samping.png",
-                                              width: 260,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Hero(
-                                          tag: "gesits-logo-raya",
-                                          child: Image.asset(
-                                            "assets/images/gesits-logo.png",
-                                            width: 80,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        const Text(
-                                          "Raya",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                        FutureBuilder<QuerySnapshot>(
-                                          future: FirebaseFirestore.instance.collection("raya_supplier").get(), // Fetch the documents in the collection
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                            }
-                                            if (snapshot.hasError) {
-                                              return Text('Error: ${snapshot.error}');
-                                            }
-                                            if (!snapshot.hasData) {
-                                              return const Text('No data found!');
-                                            }
-
-                                            int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                            return Text(
-                                              "$totalDocuments Documents Found!",
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

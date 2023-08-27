@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/electric_pages/electric_home_screen_operator.dart';
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/general_pages/general_home_screen_operator.dart';
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/metal_pages/metal_home_screen_operator.dart';
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/plastic_pages/plastic_home_screen_operator.dart';
+import 'package:slide_digital_clock/slide_digital_clock.dart';
 
 class HomeScreenPengecekanOperator extends StatefulWidget {
   const HomeScreenPengecekanOperator({super.key});
@@ -13,7 +15,11 @@ class HomeScreenPengecekanOperator extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeScreenPengecekanOperatorState();
 }
 
-class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOperator> with TickerProviderStateMixin {
+class _HomeScreenPengecekanOperatorState
+    extends State<HomeScreenPengecekanOperator> with TickerProviderStateMixin {
+  String date =
+      DateFormat("EEEEE, dd/MMMM/yyyy", "id_ID").format(DateTime.now());
+
   User? _user;
 
   @override
@@ -54,7 +60,7 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
       appBar: AppBar(
         backgroundColor: const Color(0xa3e8d820),
         title: const Text(
-          "Menu Utama",
+          "Pengecekan",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -68,7 +74,6 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
           ),
         ],
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -117,24 +122,78 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset(
-                    "assets/images/welcome.gif",
-                    height: 40,
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.lightBlueAccent,
+                            Color.fromARGB(
+                              200,
+                              30,
+                              220,
+                              190,
+                            ),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DigitalClock(
+                        hourMinuteDigitTextStyle: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(color: Colors.black),
+                        secondDigitTextStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.black),
+                        colon: const Text(
+                          ":",
+                        ),
+                      ),
+                    ),
                   ),
-                  Image.asset(
-                    "assets/images/hello.gif",
-                    height: 30,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Image.asset(
-                    "assets/images/smiley.png",
-                    height: 25,
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.lightGreenAccent,
+                            Color.fromARGB(
+                              200,
+                              30,
+                              220,
+                              190,
+                            ),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          date,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  "Selamat Datang,",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
               ),
               StreamBuilder(
                 stream: FirebaseFirestore.instance
@@ -157,32 +216,23 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                       document["name"],
                       style: const TextStyle(
                         fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   );
                 },
               ),
-              Stack(
-                children: [
-                  Center(
+              Center(
+                child: ScaleTransition(
+                  scale: _animation,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Image.asset(
-                      "assets/images/hs.gif",
-                      height: 300,
+                      "assets/images/img-gesits-g1.png",
+                      width: 250,
                     ),
                   ),
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Image.asset(
-                          "assets/images/img-gesits-g1.png",
-                          width: 250,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -208,14 +258,16 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const MetalHomeScreenOperator(),
+                                  builder: (context) =>
+                                      const MetalHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-metal-part",
@@ -259,14 +311,16 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const PlasticHomeScreenOperator(),
+                                  builder: (context) =>
+                                      const PlasticHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-plastic-part",
@@ -310,14 +364,16 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const GeneralHomeScreenOperator(),
+                                  builder: (context) =>
+                                      const GeneralHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-general-part",
@@ -361,14 +417,16 @@ class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOpera
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const ElectricHomeScreenOperator(),
+                                  builder: (context) =>
+                                      const ElectricHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-electric-part",

@@ -10,7 +10,8 @@ class PlasticHomeScreenOperator extends StatefulWidget {
   State<StatefulWidget> createState() => _PlasticHomeScreenOperatorState();
 }
 
-class _PlasticHomeScreenOperatorState extends State<PlasticHomeScreenOperator> with TickerProviderStateMixin {
+class _PlasticHomeScreenOperatorState extends State<PlasticHomeScreenOperator>
+    with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -60,7 +61,6 @@ class _PlasticHomeScreenOperatorState extends State<PlasticHomeScreenOperator> w
           ),
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -111,224 +111,229 @@ class _PlasticHomeScreenOperatorState extends State<PlasticHomeScreenOperator> w
               const SizedBox(
                 height: 10,
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/sp.gif",
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const Text(
-                                "Plastic Parts",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Hero(
-                                tag: "img-plastic-part",
-                                child: Image.asset(
-                                  "assets/images/img-plastic-part.png",
-                                  width: 80,
-                                ),
-                              ),
-                            ],
+              Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text(
+                            "Plastic Parts",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  child: Material(
-                                    color: const Color(0xa69fe512),
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(20),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => const G1PlasticScreenOperator(),
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(14),
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(
-                                              height: 12,
-                                            ),
-                                            Center(
-                                              child: ScaleTransition(
-                                                scale: _animation,
-                                                child: Image.asset(
-                                                  "assets/images/img-g1.png",
-                                                  width: 120,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Hero(
-                                              tag: "gesits-logo-g1",
-                                              child: Image.asset(
-                                                "assets/images/gesits-logo.png",
-                                                width: 80,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            const Text(
-                                              "G1",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            FutureBuilder<QuerySnapshot>(
-                                              future: FirebaseFirestore.instance.collection("g1_plastic_parts").get(), // Fetch the documents in the collection
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                                }
-                                                if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                }
-                                                if (!snapshot.hasData) {
-                                                  return const Text('No data found!');
-                                                }
-
-                                                int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                                return Text(
-                                                  "$totalDocuments Documents Found!",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  child: Material(
-                                    color: const Color(0xa6a5b007),
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(20),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => const RayaPlasticScreenOperator(),
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(14),
-                                        child: Column(
-                                          children: [
-                                            Center(
-                                              child: ScaleTransition(
-                                                scale: _animation,
-                                                child: Image.asset(
-                                                  "assets/images/img-raya.png",
-                                                  width: 120,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Hero(
-                                              tag: "gesits-logo-raya",
-                                              child: Image.asset(
-                                                "assets/images/gesits-logo.png",
-                                                width: 80,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            const Text(
-                                              "Raya",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            FutureBuilder<QuerySnapshot>(
-                                              future: FirebaseFirestore.instance.collection("raya_plastic_parts").get(), // Fetch the documents in the collection
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                                }
-                                                if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                }
-                                                if (!snapshot.hasData) {
-                                                  return const Text('No data found!');
-                                                }
-
-                                                int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                                return Text(
-                                                  "$totalDocuments Documents Found!",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Hero(
+                            tag: "img-plastic-part",
+                            child: Image.asset(
+                              "assets/images/img-plastic-part.png",
+                              width: 80,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Material(
+                                color: const Color(0xa69fe512),
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const G1PlasticScreenOperator(),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Center(
+                                          child: ScaleTransition(
+                                            scale: _animation,
+                                            child: Image.asset(
+                                              "assets/images/img-g1.png",
+                                              width: 120,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Hero(
+                                          tag: "gesits-logo-g1",
+                                          child: Image.asset(
+                                            "assets/images/gesits-logo.png",
+                                            width: 80,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Text(
+                                          "G1",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        FutureBuilder<QuerySnapshot>(
+                                          future: FirebaseFirestore.instance
+                                              .collection("g1_plastic_parts")
+                                              .get(), // Fetch the documents in the collection
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error: ${snapshot.error}');
+                                            }
+                                            if (!snapshot.hasData) {
+                                              return const Text(
+                                                  'No data found!');
+                                            }
+
+                                            int totalDocuments = snapshot.data!
+                                                .size; // Get the total number of documents
+                                            return Text(
+                                              "$totalDocuments Documents Found!",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Material(
+                                color: const Color(0xa6a5b007),
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RayaPlasticScreenOperator(),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: ScaleTransition(
+                                            scale: _animation,
+                                            child: Image.asset(
+                                              "assets/images/img-raya.png",
+                                              width: 120,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Hero(
+                                          tag: "gesits-logo-raya",
+                                          child: Image.asset(
+                                            "assets/images/gesits-logo.png",
+                                            width: 80,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Text(
+                                          "Raya",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        FutureBuilder<QuerySnapshot>(
+                                          future: FirebaseFirestore.instance
+                                              .collection("raya_plastic_parts")
+                                              .get(), // Fetch the documents in the collection
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error: ${snapshot.error}');
+                                            }
+                                            if (!snapshot.hasData) {
+                                              return const Text(
+                                                  'No data found!');
+                                            }
+
+                                            int totalDocuments = snapshot.data!
+                                                .size; // Get the total number of documents
+                                            return Text(
+                                              "$totalDocuments Documents Found!",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

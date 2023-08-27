@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:qc_parts_check/manager/register_screen_manager.dart';
 import 'package:qc_parts_check/operator/register_screen_operator.dart';
 import 'package:qc_parts_check/operator/bottom_navbar_operator.dart';
@@ -16,7 +15,27 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
+  // The indicator will show up when _isLoading = true.
+  // The button will be unpressable, too.
+  bool _isLoading = false;
+
+  // This function will be triggered when the button is pressed
+  void _startLoading() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Wait for 3 seconds
+    // You can replace this with your own task like fetching data, proccessing images, etc
+    await Future.delayed(const Duration(seconds: 3));
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   bool visible = false;
   bool _isObscure = true;
   final _formkey = GlobalKey<FormState>();
@@ -30,8 +49,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     // Retrieve logged in user data
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -89,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           },
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -158,27 +175,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               ),
               Column(
                 children: [
-                  Stack(
-                    children: [
-                      Center(
+                  Center(
+                    child: ScaleTransition(
+                      scale: _animation,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
                         child: Image.asset(
-                          "assets/images/ls.gif",
-                          height: 250,
+                          "assets/images/img-loginscreen.png",
+                          width: 250,
                         ),
                       ),
-                      Center(
-                        child: ScaleTransition(
-                          scale: _animation,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Image.asset(
-                              "assets/images/img-loginscreen.png",
-                              width: 250,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
@@ -210,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                         return "Email tidak boleh kosong!";
                                       }
                                       if (!RegExp(
-                                          "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                              "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                                           .hasMatch(value)) {
                                         return ("Masukkan email yang valid!");
                                       } else {
@@ -284,7 +291,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                     ),
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -292,29 +298,26 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                         const SizedBox(
                           height: 20,
                         ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(30),
-                            backgroundColor: Colors.orange,
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        Center(
+                          child: ElevatedButton.icon(
+                            icon: _isLoading
+                                ? const CircularProgressIndicator()
+                                : const Icon(Icons.login),
+                            label: Text(
+                              _isLoading ? 'Loading...' : 'Login',
+                              style: const TextStyle(fontSize: 20),
                             ),
-                          ),
-                          onPressed: () {
-                            if (_formkey.currentState!.validate()) {
-                              HapticFeedback.vibrate();
-                              signIn(
-                                emailController.text,
-                                passwordController.text,
-                              );
-                              route();
-                            }
-                          },
-                          child: const Text(
-                            "Login",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            onPressed: () {
+                              if (_formkey.currentState!.validate()) {
+                                signIn(
+                                  emailController.text,
+                                  passwordController.text,
+                                );
+                                route();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(200, 50)),
                           ),
                         ),
                         const SizedBox(
@@ -352,7 +355,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           onPressed: () async {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (context) => const RegisterScreenOperator(),
+                                builder: (context) =>
+                                    const RegisterScreenOperator(),
                               ),
                             );
                           },
@@ -387,7 +391,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                           onPressed: () async {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (context) => const RegisterScreenManager(),
+                                builder: (context) =>
+                                    const RegisterScreenManager(),
                               ),
                             );
                           },
@@ -441,13 +446,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   void signIn(String mail, String pwd) async {
     try {
+      _startLoading();
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: mail,
         password: pwd,
       );
+      _isLoading;
       route();
     } on FirebaseAuthException catch (e) {
+      _isLoading;
       if (e.code == 'user-not-found') {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,
@@ -463,6 +472,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           print('No user found for that email.');
         }
       } else if (e.code == 'wrong-password') {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.red,

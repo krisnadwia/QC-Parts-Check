@@ -12,16 +12,15 @@ class RayaGraphHomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _RayaGraphHomeScreenState();
 }
 
-class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerProviderStateMixin {
-
+class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
 
     // Retrieve logged in user data
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -66,7 +65,6 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
           ),
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -114,30 +112,20 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
                   ),
                 ],
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/hs.gif",
-                      height: 100,
-                    ),
-                  ),
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Hero(
-                          tag: "raya-samping",
-                          child: Image.asset(
-                            "assets/images/raya-samping.png",
-                            width: 260,
-                          ),
-                        ),
+              Center(
+                child: ScaleTransition(
+                  scale: _animation,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Hero(
+                      tag: "raya-samping",
+                      child: Image.asset(
+                        "assets/images/raya-samping.png",
+                        width: 260,
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
               Center(
                 child: Column(
@@ -160,14 +148,16 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const RayaMetalGraphScreen(),
+                                  builder: (context) =>
+                                      const RayaMetalGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-metal-part",
@@ -211,14 +201,16 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const RayaPlasticGraphScreen(),
+                                  builder: (context) =>
+                                      const RayaPlasticGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-plastic-part",
@@ -262,14 +254,16 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const RayaGeneralGraphScreen(),
+                                  builder: (context) =>
+                                      const RayaGeneralGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-general-part",
@@ -313,14 +307,16 @@ class _RayaGraphHomeScreenState extends State<RayaGraphHomeScreen> with TickerPr
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const RayaElectricGraphScreen(),
+                                  builder: (context) =>
+                                      const RayaElectricGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-electric-part",

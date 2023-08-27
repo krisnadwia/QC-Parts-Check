@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +39,24 @@ class G1ElectricScreenOperator extends StatefulWidget {
 }
 
 class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  void _scrollUp() {
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   var itemsNamaPart = [
     "Battery",
     "Belt",
@@ -91,22 +110,24 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
   void initState() {
     super.initState();
 
-    itemList = [<String>[
-      "Nama Part",
-      "Nama Supplier",
-      "Tanggal Kedatangan",
-      "Jumlah Total",
-      "Tanggal Pengecekan",
-      "Qty OK",
-      "Qty NG",
-      "Problem",
-      "URL",
-      "Tanggal Return",
-      "Ditambahkan Oleh",
-      "Diperiksa Oleh",
-      "Catatan",
-      "Status",
-    ]];
+    itemList = [
+      <String>[
+        "Nama Part",
+        "Nama Supplier",
+        "Tanggal Kedatangan",
+        "Jumlah Total",
+        "Tanggal Pengecekan",
+        "Qty OK",
+        "Qty NG",
+        "Problem",
+        "URL",
+        "Tanggal Return",
+        "Ditambahkan Oleh",
+        "Diperiksa Oleh",
+        "Catatan",
+        "Status",
+      ]
+    ];
 
     // Retrieve logged in user data
     FirebaseAuth.instance.authStateChanges().listen((user) {
@@ -136,30 +157,42 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
   final _formKey = GlobalKey<FormState>();
 
   // Text fields controllers
-  final TextEditingController _searchTextNamaPartController = TextEditingController();
-  final TextEditingController _searchTextTanggalKedatanganController = TextEditingController();
-  final TextEditingController _searchTextTanggalPengecekanController = TextEditingController();
+  final TextEditingController _searchTextNamaPartController =
+      TextEditingController();
+  final TextEditingController _searchTextTanggalKedatanganController =
+      TextEditingController();
+  final TextEditingController _searchTextTanggalPengecekanController =
+      TextEditingController();
   final TextEditingController _namaPartController = TextEditingController();
   final TextEditingController _namaSupplierController = TextEditingController();
-  final TextEditingController _tanggalKedatanganController = TextEditingController();
+  final TextEditingController _tanggalKedatanganController =
+      TextEditingController();
   final TextEditingController _jumlahTotalController = TextEditingController();
-  final TextEditingController _tanggalPengecekanController = TextEditingController();
+  final TextEditingController _tanggalPengecekanController =
+      TextEditingController();
   final TextEditingController _qtyOkController = TextEditingController();
   final TextEditingController _qtyNgController = TextEditingController();
   final TextEditingController _problemController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
-  final TextEditingController _tanggalReturnController = TextEditingController();
+  final TextEditingController _tanggalReturnController =
+      TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _catatanController = TextEditingController();
-  final TextEditingController _ditambahkanOlehController = TextEditingController();
-  final TextEditingController _diperiksaOlehController = TextEditingController();
+  final TextEditingController _ditambahkanOlehController =
+      TextEditingController();
+  final TextEditingController _diperiksaOlehController =
+      TextEditingController();
 
   // Firestore collection reference
-  final CollectionReference _g1ElectricParts = FirebaseFirestore.instance.collection("g1_electric_parts");
+  final CollectionReference _g1ElectricParts =
+      FirebaseFirestore.instance.collection("g1_electric_parts");
   List<DocumentSnapshot> documents = [];
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getDataFromFirestore() {
-    return FirebaseFirestore.instance.collection('g1_electric_parts').orderBy("tanggalPengecekan", descending: true).snapshots();
+    return FirebaseFirestore.instance
+        .collection('g1_electric_parts')
+        .orderBy("tanggalPengecekan", descending: true)
+        .snapshots();
   }
 
   // Search text variable
@@ -242,9 +275,7 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                       ),
                       Center(
                         child: Text(
-                          action == "create"
-                              ? "Tambah Data"
-                              : "Update Data",
+                          action == "create" ? "Tambah Data" : "Update Data",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -274,7 +305,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -297,7 +329,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       },
                                       controller: _namaPartController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Nama Part",
                                         hintText: "Masukkan Nama Part",
                                         prefixIcon: IconButton(
@@ -313,7 +346,9 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                             _namaPartController.text = value;
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return itemsNamaPart.map<PopupMenuItem<String>>((String value) {
+                                            return itemsNamaPart
+                                                .map<PopupMenuItem<String>>(
+                                                    (String value) {
                                               return PopupMenuItem(
                                                 value: value,
                                                 child: Text(
@@ -345,7 +380,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Opsional",
@@ -361,11 +397,13 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                     TextFormField(
                                       controller: _namaSupplierController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Nama Supplier",
                                         hintText: "Masukkan Nama Supplier",
                                         prefixIcon: IconButton(
-                                          onPressed: _namaSupplierController.clear,
+                                          onPressed:
+                                              _namaSupplierController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: PopupMenuButton<String>(
@@ -374,10 +412,13 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                           ),
                                           tooltip: "Pilih",
                                           onSelected: (String value) {
-                                            _namaSupplierController.text = value;
+                                            _namaSupplierController.text =
+                                                value;
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return itemsNamaSupplier.map<PopupMenuItem<String>>((String value) {
+                                            return itemsNamaSupplier
+                                                .map<PopupMenuItem<String>>(
+                                                    (String value) {
                                               return PopupMenuItem(
                                                 value: value,
                                                 child: Text(
@@ -409,7 +450,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -432,11 +474,14 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       },
                                       controller: _tanggalKedatanganController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Tanggal Kedatangan",
                                         hintText: "Masukkan Tanggal Kedatangan",
                                         prefixIcon: IconButton(
-                                          onPressed: _tanggalKedatanganController.clear,
+                                          onPressed:
+                                              _tanggalKedatanganController
+                                                  .clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -445,7 +490,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                             Icons.calendar_today,
                                           ),
                                           onPressed: () async {
-                                            DateTime? pickedDate = await showDatePicker(
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
@@ -457,14 +503,18 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                               if (kDebugMode) {
                                                 print(pickedDate);
                                               } // pickedDate output format => 2021-03-10 00:00:00.000
-                                              String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                              String formattedDate =
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(pickedDate);
                                               if (kDebugMode) {
                                                 print(formattedDate);
                                               } // Formatted date output using intl package =>  2021-03-16
                                               // You can implement different kind of Date Format here according to your requirement
 
                                               setState(() {
-                                                _tanggalKedatanganController.text = formattedDate; // Set output date to TextField value.
+                                                _tanggalKedatanganController
+                                                        .text =
+                                                    formattedDate; // Set output date to TextField value.
                                               });
                                             } else {
                                               if (kDebugMode) {
@@ -495,7 +545,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Otomatis",
@@ -512,9 +563,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                         contentPadding: EdgeInsets.all(10),
                                         labelText: "Jumlah Total (OK + NG)",
                                         hintText: "OK + NG",
-                                        prefixIcon: Icon(
-                                            Icons.settings_suggest_sharp
-                                        ),
+                                        prefixIcon:
+                                            Icon(Icons.settings_suggest_sharp),
                                       ),
                                     ),
                                   ],
@@ -537,7 +587,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -560,11 +611,14 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       },
                                       controller: _tanggalPengecekanController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Tanggal Pengecekan",
                                         hintText: "Masukkan Tanggal Pengecekan",
                                         prefixIcon: IconButton(
-                                          onPressed: _tanggalPengecekanController.clear,
+                                          onPressed:
+                                              _tanggalPengecekanController
+                                                  .clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -573,7 +627,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                             Icons.calendar_today_outlined,
                                           ),
                                           onPressed: () async {
-                                            DateTime? pickedDate = await showDatePicker(
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
@@ -585,14 +640,18 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                               if (kDebugMode) {
                                                 print(pickedDate);
                                               } // pickedDate output format => 2021-03-10 00:00:00.000
-                                              String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                              String formattedDate =
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(pickedDate);
                                               if (kDebugMode) {
                                                 print(formattedDate);
                                               } // Formatted date output using intl package =>  2021-03-16
                                               // You can implement different kind of Date Format here according to your requirement
 
                                               setState(() {
-                                                _tanggalPengecekanController.text = formattedDate; // Set output date to TextField value.
+                                                _tanggalPengecekanController
+                                                        .text =
+                                                    formattedDate; // Set output date to TextField value.
                                               });
                                             } else {
                                               if (kDebugMode) {
@@ -623,7 +682,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -646,7 +706,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       keyboardType: TextInputType.number,
                                       controller: _qtyOkController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Qty (OK)",
                                         hintText: "Masukkan Jumlah OK",
                                         prefixIcon: IconButton(
@@ -675,7 +736,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -698,7 +760,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       keyboardType: TextInputType.number,
                                       controller: _qtyNgController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Qty (NG)",
                                         hintText: "Masukkan Jumlah NG",
                                         prefixIcon: IconButton(
@@ -727,7 +790,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Opsional",
@@ -740,7 +804,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                     TextFormField(
                                       controller: _problemController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Problem",
                                         hintText: "Masukkan Keterangan Problem",
                                         prefixIcon: IconButton(
@@ -769,7 +834,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Opsional",
@@ -785,7 +851,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                     TextFormField(
                                       controller: _urlController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "URL",
                                         hintText: "Masukkan Link URL",
                                         prefixIcon: IconButton(
@@ -823,7 +890,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Opsional",
@@ -840,11 +908,13 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       readOnly: true,
                                       controller: _tanggalReturnController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Tanggal Return",
                                         hintText: "Masukkan Tanggal Return",
                                         prefixIcon: IconButton(
-                                          onPressed: _tanggalReturnController.clear,
+                                          onPressed:
+                                              _tanggalReturnController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -853,7 +923,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                             Icons.calendar_month_outlined,
                                           ),
                                           onPressed: () async {
-                                            DateTime? pickedDate = await showDatePicker(
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
@@ -865,14 +936,17 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                               if (kDebugMode) {
                                                 print(pickedDate);
                                               } // pickedDate output format => 2021-03-10 00:00:00.000
-                                              String formattedDate = DateFormat("yyyy-MM-dd").format(pickedDate);
+                                              String formattedDate =
+                                                  DateFormat("yyyy-MM-dd")
+                                                      .format(pickedDate);
                                               if (kDebugMode) {
                                                 print(formattedDate);
                                               } // Formatted date output using intl package =>  2021-03-16
                                               // You can implement different kind of Date Format here according to your requirement
 
                                               setState(() {
-                                                _tanggalReturnController.text = formattedDate; // Set output date to TextField value.
+                                                _tanggalReturnController.text =
+                                                    formattedDate; // Set output date to TextField value.
                                               });
                                             } else {
                                               if (kDebugMode) {
@@ -902,9 +976,7 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                   ),
                                 ),
                                 child: Text(
-                                  action == "create"
-                                      ? "Create"
-                                      : "Update",
+                                  action == "create" ? "Create" : "Update",
                                   style: TextStyle(
                                     color: action == "create"
                                         ? Colors.blue
@@ -923,7 +995,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                     content: SizedBox(
                                       height: 100,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             action == "create"
@@ -942,31 +1015,52 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                       ElevatedButton(
                                         onPressed: () async {
                                           // Validate returns true if the form is valid, or false otherwise.
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             HapticFeedback.vibrate();
-                                            final String namaPart = _namaPartController.text;
-                                            final String namaSupplier = _namaSupplierController.text;
-                                            final String tanggalKedatangan = _tanggalKedatanganController.text;
-                                            final num? jumlahTotal = num.tryParse(_jumlahTotalController.text);
-                                            final String tanggalPengecekan = _tanggalPengecekanController.text;
-                                            final num? qtyOk = num.tryParse(_qtyOkController.text);
-                                            final num? qtyNg = num.tryParse(_qtyNgController.text);
-                                            final String problem = _problemController.text;
-                                            final String url = _urlController.text;
-                                            final String tanggalReturn = _tanggalReturnController.text;
-                                            final String status = _statusController.text;
-                                            final String catatan = _catatanController.text;
-                                            final String ditambahkanOleh = _ditambahkanOlehController.text;
-                                            final String diperiksaOleh = _diperiksaOlehController.text;
+                                            final String namaPart =
+                                                _namaPartController.text;
+                                            final String namaSupplier =
+                                                _namaSupplierController.text;
+                                            final String tanggalKedatangan =
+                                                _tanggalKedatanganController
+                                                    .text;
+                                            final num? jumlahTotal =
+                                                num.tryParse(
+                                                    _jumlahTotalController
+                                                        .text);
+                                            final String tanggalPengecekan =
+                                                _tanggalPengecekanController
+                                                    .text;
+                                            final num? qtyOk = num.tryParse(
+                                                _qtyOkController.text);
+                                            final num? qtyNg = num.tryParse(
+                                                _qtyNgController.text);
+                                            final String problem =
+                                                _problemController.text;
+                                            final String url =
+                                                _urlController.text;
+                                            final String tanggalReturn =
+                                                _tanggalReturnController.text;
+                                            final String status =
+                                                _statusController.text;
+                                            final String catatan =
+                                                _catatanController.text;
+                                            final String ditambahkanOleh =
+                                                _ditambahkanOlehController.text;
+                                            final String diperiksaOleh =
+                                                _diperiksaOlehController.text;
 
                                             if (action == "create") {
                                               // Persist a new product to Firestore
                                               await _g1ElectricParts.add({
                                                 "namaPart": namaPart,
                                                 "namaSupplier": namaSupplier,
-                                                "tanggalKedatangan": tanggalKedatangan,
+                                                "tanggalKedatangan":
+                                                    tanggalKedatangan,
                                                 "jumlahTotal": jumlahTotal,
-                                                "tanggalPengecekan": tanggalPengecekan,
+                                                "tanggalPengecekan":
+                                                    tanggalPengecekan,
                                                 "qtyOk": qtyOk,
                                                 "qtyNg": qtyNg,
                                                 "problem": problem,
@@ -974,7 +1068,8 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                                 "tanggalReturn": tanggalReturn,
                                                 "status": status,
                                                 "catatan": catatan,
-                                                "ditambahkanOleh": ditambahkanOleh,
+                                                "ditambahkanOleh":
+                                                    ditambahkanOleh,
                                                 "diperiksaOleh": diperiksaOleh,
                                               });
                                             }
@@ -986,28 +1081,33 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                                   .set({
                                                 "namaPart": namaPart,
                                                 "namaSupplier": namaSupplier,
-                                                "tanggalKedatangan": tanggalKedatangan,
+                                                "tanggalKedatangan":
+                                                    tanggalKedatangan,
                                                 "jumlahTotal": jumlahTotal,
-                                                "tanggalPengecekan": tanggalPengecekan,
+                                                "tanggalPengecekan":
+                                                    tanggalPengecekan,
                                                 "qtyOk": qtyOk,
                                                 "qtyNg": qtyNg,
                                                 "problem": problem,
                                                 "url": url,
                                                 "tanggalReturn": tanggalReturn,
                                                 "status": status,
-                                                "catatan" : catatan,
-                                                "ditambahkanOleh": ditambahkanOleh,
+                                                "catatan": catatan,
+                                                "ditambahkanOleh":
+                                                    ditambahkanOleh,
                                                 "diperiksaOleh": diperiksaOleh,
                                               });
                                             }
 
                                             // Show a snackbar
                                             if (!mounted) return;
-                                            ScaffoldMessenger.of(context).showSnackBar(
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
                                               SnackBar(
-                                                backgroundColor: action == "create"
-                                                    ? Colors.yellow
-                                                    : Colors.grey,
+                                                backgroundColor:
+                                                    action == "create"
+                                                        ? Colors.yellow
+                                                        : Colors.grey,
                                                 content: Text(
                                                   action == "create"
                                                       ? "Successfully create data!"
@@ -1022,9 +1122,11 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                                             // Clear the text fields
                                             _namaPartController.text = "";
                                             _namaSupplierController.text = "";
-                                            _tanggalKedatanganController.text = "";
+                                            _tanggalKedatanganController.text =
+                                                "";
                                             _jumlahTotalController.text = "";
-                                            _tanggalPengecekanController.text = "";
+                                            _tanggalPengecekanController.text =
+                                                "";
                                             _qtyOkController.text = "";
                                             _qtyNgController.text = "";
                                             _problemController.text = "";
@@ -1197,7 +1299,7 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Apakah Anda ingin mendownload data ini?",
+                                "Apakah Anda ingin mengexport data ini?",
                               ),
                             ],
                           ),
@@ -1283,8 +1385,7 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                     _ditambahkanOlehController.text = document?["name"];
                     _diperiksaOlehController.text = "";
                     _createOrUpdate();
-                  }
-              );
+                  });
             },
           ),
           Builder(
@@ -1299,201 +1400,248 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
           ),
         ],
       ),
-
       endDrawer: Drawer(
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: 20,
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.cyan,
+                Color.fromARGB(
+                  200,
+                  30,
+                  220,
+                  190,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
+              ],
+            ),
+          ),
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.teal,
+                            Color.fromARGB(
+                              200,
+                              30,
+                              220,
+                              190,
+                            ),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                    "Cari data berdasarkan:",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Nama Part",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Hari/Bulan/Tahun Kedatangan",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Hari/Bulan/Tahun Pengecekan",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  controller: _searchTextNamaPartController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextNamaPart = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Masukkan Nama Part",
+                                    labelText: "Nama Part",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  inputFormatters: <TextInputFormatter>[
+                                    LengthLimitingTextInputFormatter(10),
+                                  ],
+                                  controller:
+                                      _searchTextTanggalKedatanganController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextTanggalKedatangan = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "yyyy-MM-dd",
+                                    labelText: "Tanggal Kedatangan",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  inputFormatters: <TextInputFormatter>[
+                                    LengthLimitingTextInputFormatter(10),
+                                  ],
+                                  controller:
+                                      _searchTextTanggalPengecekanController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextTanggalPengecekan = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "yyyy-MM-dd",
+                                    labelText: "Tanggal Pengecekan",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: const Text(
+                          "GESITS G1 Electric Parts",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(1, 1),
+                                blurRadius: 2,
+                                color: Color.fromARGB(255, 0, 0, 0),
+                              ),
+                            ],
+                            color: Colors.lightGreen,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                          bottom: 12,
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            "assets/images/img-g1.png",
+                            width: 120,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Column(
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                  "Cari data berdasarkan:",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Nama Part",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Hari/Bulan/Tahun Kedatangan",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Hari/Bulan/Tahun Pengecekan",
-                                ),
-                              ],
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/gesits-logo.png",
+                              width: 200,
                             ),
                           ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: _searchTextNamaPartController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextNamaPart = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "Masukkan Nama Part",
-                                  labelText: "Nama Part",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                inputFormatters: <TextInputFormatter>[
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                controller: _searchTextTanggalKedatanganController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextTanggalKedatangan = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "yyyy-MM-dd",
-                                  labelText: "Tanggal Kedatangan",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                inputFormatters: <TextInputFormatter>[
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                controller: _searchTextTanggalPengecekanController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextTanggalPengecekan = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "yyyy-MM-dd",
-                                  labelText: "Tanggal Pengecekan",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/wima-logo.png",
+                              width: 200,
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: const Text(
-                        "GESITS G1 Electric Parts",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          shadows: <Shadow>[
-                            Shadow(
-                              offset: Offset(1, 1),
-                              blurRadius: 2,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                            ),
-                          ],
-                          color: Colors.lightGreen,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        bottom: 12,
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/images/img-g1.png",
-                          width: 120,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            "assets/images/gesits-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Image.asset(
-                            "assets/images/wima-logo.png",
-                            width: 200,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.small(
+            tooltip: "Scroll Down",
+            backgroundColor: Colors.yellow,
+            onPressed: _scrollDown,
+            child: const Icon(
+              Icons.arrow_downward,
+              color: Colors.blue,
+            ),
+          ),
+          FloatingActionButton.small(
+            tooltip: "Scroll Up",
+            backgroundColor: Colors.blue,
+            onPressed: _scrollUp,
+            child: const Icon(
+              Icons.arrow_upward,
+              color: Colors.yellow,
+            ),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           getDataFromFirestore();
@@ -1545,6 +1693,7 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
             }
 
             return ListView.builder(
+              controller: _scrollController,
               itemCount: documents.length,
               itemBuilder: (BuildContext context, int index) {
                 final DocumentSnapshot documentSnapshot = documents[index];
@@ -1574,491 +1723,558 @@ class _G1ElectricScreenOperatorState extends State<G1ElectricScreenOperator> {
                   Colors.blue,
                   Colors.red,
                 ];
-                return Card(
-                  margin: const EdgeInsets.all(8),
-                  color: Colors.tealAccent,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: Colors.deepPurpleAccent,
-                      width: 1,
+                return Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blueAccent,
+                      ),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Colors.green,
+                          Color.fromARGB(
+                            200,
+                            30,
+                            220,
+                            190,
+                          ),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white70,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Column(
-                                  children: [
-                                    // Press this button to edit a single product
-                                    IconButton(
-                                      tooltip: "Update",
-                                      color: Colors.orange,
-                                      icon: const Icon(
-                                        Icons.edit_outlined,
-                                      ),
-                                      onPressed: () => _createOrUpdate(documentSnapshot),
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    // This icon button is used to delete a single product
-                                    IconButton(
-                                      tooltip: "Delete",
-                                      color: Colors.red,
-                                      icon: const Icon(
-                                        Icons.delete_outline,
-                                      ),
-                                      onPressed: () {
-                                        // Create a delete confirmation dialog
-                                        AlertDialog delete = AlertDialog(
-                                          title: const Text(
-                                            "Peringatan!",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          content: SizedBox(
-                                            height: 200,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          actions: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                _deleteProduct(documentSnapshot.id);
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                "Ya",
-                                              ),
-                                            ),
-                                            TextButton(
-                                              child: const Text(
-                                                "Tidak",
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => delete,
-                                        );
-                                      },
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Colors.blue,
+                                    Color.fromARGB(
+                                      200,
+                                      30,
+                                      220,
+                                      190,
                                     ),
                                   ],
                                 ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              const SizedBox(
-                                width: 20,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Text(
+                                  "Document ID: ${documentSnapshot.id}",
+                                  style: GoogleFonts.amiri(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Nama Part",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white70,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      // Press this button to edit a single product
+                                      IconButton(
+                                        tooltip: "Update",
+                                        color: Colors.orange,
+                                        icon: const Icon(
+                                          Icons.edit_outlined,
+                                        ),
+                                        onPressed: () =>
+                                            _createOrUpdate(documentSnapshot),
+                                      ),
+                                      const SizedBox(
+                                        height: 40,
+                                      ),
+                                      // This icon button is used to delete a single product
+                                      IconButton(
+                                        tooltip: "Delete",
+                                        color: Colors.red,
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                        ),
+                                        onPressed: () {
+                                          // Create a delete confirmation dialog
+                                          AlertDialog delete = AlertDialog(
+                                            title: const Text(
+                                              "Peringatan!",
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            content: SizedBox(
+                                              height: 200,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  _deleteProduct(
+                                                      documentSnapshot.id);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  "Ya",
+                                                ),
+                                              ),
+                                              TextButton(
+                                                child: const Text(
+                                                  "Tidak",
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => delete,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Nama Part",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Nama Supplier",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Nama Supplier",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Tanggal Kedatangan",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Tanggal Kedatangan",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Jumlah Total (OK + NG)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Jumlah Total (OK + NG)",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Tanggal Pengecekan",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Tanggal Pengecekan",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Qty (OK)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Qty (OK)",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Qty (NG)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Qty (NG)",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Problem",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Problem",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "URL",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "URL",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "Tanggal Return",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    Text(
+                                      "Tanggal Return",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const Column(
-                                children: [
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                  Text(
-                                    " : ",
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    documentSnapshot["namaPart"],
-                                  ),
-                                  Text(
-                                    documentSnapshot["namaSupplier"],
-                                  ),
-                                  Text(
-                                    documentSnapshot["tanggalKedatangan"],
-                                  ),
-                                  Text(
-                                    documentSnapshot["jumlahTotal"].toString(),
-                                  ),
-                                  Text(
-                                    documentSnapshot["tanggalPengecekan"],
-                                  ),
-                                  Text(
-                                    documentSnapshot["qtyOk"].toString(),
-                                  ),
-                                  Text(
-                                    documentSnapshot["qtyNg"].toString(),
-                                  ),
-                                  Text(
-                                    documentSnapshot["problem"],
-                                  ),
-                                  Linkify(
-                                    onOpen: _onOpen,
-                                    text: documentSnapshot["url"],
-                                  ),
-                                  Text(
-                                    documentSnapshot["tanggalReturn"],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Container(
+                                  ],
+                                ),
+                                const Column(
+                                  children: [
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                    Text(
+                                      " : ",
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      documentSnapshot["namaPart"],
+                                    ),
+                                    Text(
+                                      documentSnapshot["namaSupplier"],
+                                    ),
+                                    Text(
+                                      documentSnapshot["tanggalKedatangan"],
+                                    ),
+                                    Text(
+                                      documentSnapshot["jumlahTotal"]
+                                          .toString(),
+                                    ),
+                                    Text(
+                                      documentSnapshot["tanggalPengecekan"],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      documentSnapshot["qtyOk"].toString(),
+                                    ),
+                                    Text(
+                                      documentSnapshot["qtyNg"].toString(),
+                                    ),
+                                    Text(
+                                      documentSnapshot["problem"],
+                                    ),
+                                    Linkify(
+                                      onOpen: _onOpen,
+                                      text: documentSnapshot["url"],
+                                    ),
+                                    Text(
+                                      documentSnapshot["tanggalReturn"],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 2,
+                                          ),
+                                          color: Colors.yellow,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            top: 32,
+                                            bottom: 32,
+                                            left: 40,
+                                            right: 40,
+                                          ),
+                                          child: PieChart(
+                                            dataMap: dataMap,
+                                            colorList: colorList,
+                                            animationDuration: const Duration(
+                                              milliseconds: 3200,
+                                            ),
+                                            chartLegendSpacing: 32,
+                                            chartRadius: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3.2,
+                                            initialAngleInDegree: 0,
+                                            chartType: ChartType.disc,
+                                            centerText: "Percentage",
+                                            ringStrokeWidth: 32,
+                                            legendOptions: const LegendOptions(
+                                              showLegendsInRow: false,
+                                              legendPosition:
+                                                  LegendPosition.bottom,
+                                              showLegends: true,
+                                              legendShape: BoxShape.rectangle,
+                                              legendTextStyle: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            chartValuesOptions:
+                                                const ChartValuesOptions(
+                                              showChartValueBackground: true,
+                                              showChartValues: true,
+                                              showChartValuesInPercentage: true,
+                                              showChartValuesOutside: true,
+                                              decimalPlaces: 2,
+                                            ),
+                                            // gradientList: ---To add gradient colors---
+                                            // emptyColorGradient: ---Empty Color gradient---
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
                                       decoration: BoxDecoration(
+                                        color: Colors.white30,
+                                        borderRadius: BorderRadius.circular(10),
                                         border: Border.all(
-                                          color: Colors.black,
+                                          color: Colors.lightBlue,
                                           width: 2,
                                         ),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                            "assets/images/gradient.gif",
-                                          ),
-                                          fit: BoxFit.fill,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              "Status",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white70,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Icon(
+                                                      documentSnapshot[
+                                                                  "status"] ==
+                                                              "Belum Disetujui Manager"
+                                                          ? Icons
+                                                              .cancel_outlined
+                                                          : Icons
+                                                              .check_circle_outlined,
+                                                      color: documentSnapshot[
+                                                                  "status"] ==
+                                                              "Belum Disetujui Manager"
+                                                          ? Colors.red
+                                                          : Colors.green,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      documentSnapshot[
+                                                          "status"],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  width: 40,
+                                ),
+                                Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white30,
                                         borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Container(
-                                        margin: const EdgeInsets.only(
-                                          top: 32,
-                                          bottom: 32,
-                                          left: 40,
-                                          right: 40,
+                                        border: Border.all(
+                                          color: Colors.redAccent,
+                                          width: 2,
                                         ),
-                                        child: PieChart(
-                                          dataMap: dataMap,
-                                          colorList: colorList,
-                                          animationDuration: const Duration(
-                                            milliseconds: 3200,
-                                          ),
-                                          chartLegendSpacing: 32,
-                                          chartRadius: MediaQuery.of(context).size.width / 3.2,
-                                          initialAngleInDegree: 0,
-                                          chartType: ChartType.disc,
-                                          centerText: "Percentage",
-                                          ringStrokeWidth: 32,
-                                          legendOptions: const LegendOptions(
-                                            showLegendsInRow: false,
-                                            legendPosition: LegendPosition.bottom,
-                                            showLegends: true,
-                                            legendShape: BoxShape.rectangle,
-                                            legendTextStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              "Ditambahkan Oleh",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          chartValuesOptions: const ChartValuesOptions(
-                                            showChartValueBackground: true,
-                                            showChartValues: true,
-                                            showChartValuesInPercentage: true,
-                                            showChartValuesOutside: true,
-                                            decimalPlaces: 2,
-                                          ),
-                                          // gradientList: ---To add gradient colors---
-                                          // emptyColorGradient: ---Empty Color gradient---
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white70,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Text(
+                                                  documentSnapshot[
+                                                      "ditambahkanOleh"],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white30,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.lightBlue,
-                                        width: 2,
-                                      ),
+                                    const SizedBox(
+                                      height: 30,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Status",
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white70,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Icon(
-                                                    documentSnapshot["status"] == "Belum Disetujui Manager"
-                                                        ? Icons.cancel_outlined
-                                                        : Icons.check_circle_outlined,
-                                                    color: documentSnapshot["status"] == "Belum Disetujui Manager"
-                                                        ? Colors.red
-                                                        : Colors.green,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    documentSnapshot["status"],
-                                                  ),
-                                                ],
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white30,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.yellowAccent,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              "Diperiksa Oleh",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                width: 40,
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white30,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.redAccent,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Ditambahkan Oleh",
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white70,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Text(
-                                                documentSnapshot["ditambahkanOleh"],
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white70,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      documentSnapshot[
+                                                          "diperiksaOleh"],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white30,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.yellowAccent,
-                                        width: 2,
-                                      ),
+                                    const SizedBox(
+                                      height: 30,
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Diperiksa Oleh",
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white70,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    documentSnapshot["diperiksaOleh"],
-                                                  ),
-                                                ],
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white30,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.indigo,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              "Catatan Manager",
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white30,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.indigo,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        children: [
-                                          const Text(
-                                            "Catatan Manager",
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white70,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    documentSnapshot["catatan"],
-                                                  ),
-                                                ],
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.white70,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      documentSnapshot[
+                                                          "catatan"],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -2081,17 +2297,18 @@ generateCsv() async {
     final bytes = utf8.encode(csvData);
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.document.createElement("a") as html.AnchorElement..href = url..style.display = "none"..download = "G1_Electric_Parts_$formattedDate.csv";
+    final anchor = html.document.createElement("a") as html.AnchorElement
+      ..href = url
+      ..style.display = "none"
+      ..download = "G1_Electric_Parts_$formattedDate.csv";
     html.document.body!.children.add(anchor);
     anchor.click();
     html.Url.revokeObjectUrl(url);
-  }
-
-  else if (Platform.isAndroid) {
+  } else if (Platform.isAndroid) {
     Directory generalDownloadDir = Directory("storage/emulated/0/Download");
     final File file = await (File(
-        "${generalDownloadDir.path}/G1_Electric_Parts_$formattedDate.csv"
-    ).create());
+            "${generalDownloadDir.path}/G1_Electric_Parts_$formattedDate.csv")
+        .create());
     await file.writeAsString(csvData);
   }
 }

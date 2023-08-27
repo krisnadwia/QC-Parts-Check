@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:qc_parts_check/support_pages/about_screen.dart';
 import 'package:qc_parts_check/support_pages/login_screen.dart';
 import 'package:qc_parts_check/utils/exit_popup.dart';
@@ -11,7 +10,8 @@ class GreetingsScreen extends StatefulWidget {
   State<GreetingsScreen> createState() => _GreetingsScreenState();
 }
 
-class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderStateMixin {
+class _GreetingsScreenState extends State<GreetingsScreen>
+    with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -75,7 +75,6 @@ class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderSt
             ),
           ],
         ),
-
         body: Center(
           child: Material(
             child: Container(
@@ -179,24 +178,38 @@ class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderSt
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: IconButton(
+                    padding: const EdgeInsets.all(20),
+                    child: ElevatedButton(
                       onPressed: () {
-                        HapticFeedback.vibrate();
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const LoginScreen(),
                           ),
                         );
                       },
-                      icon: Image.asset(
-                        "assets/images/start.gif",
-                        width: 200,
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(40),
+                        backgroundColor:
+                            Colors.yellowAccent, // <-- Button color
+                        foregroundColor: Colors.blue, // <-- Splash color
+                      ),
+                      child: const Column(
+                        children: [
+                          Icon(
+                            Icons.play_arrow,
+                            size: 40,
+                          ),
+                          Text(
+                            "Mulai",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 30,
                   ),
                 ],
               ),

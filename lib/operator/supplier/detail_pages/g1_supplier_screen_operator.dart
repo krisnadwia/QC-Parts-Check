@@ -5,6 +5,7 @@ import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -19,6 +20,24 @@ class G1SupplierScreenOperator extends StatefulWidget {
 }
 
 class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  void _scrollUp() {
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
+      duration: const Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   var itemsJenisPart = [
     "Metal Part",
     "Plastic Part",
@@ -32,30 +51,40 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
   void initState() {
     super.initState();
 
-    itemList = [<String>[
-      "Nama Part",
-      "Kode Part",
-      "Jenis Part",
-      "Nama Supplier",
-    ]];
+    itemList = [
+      <String>[
+        "Nama Part",
+        "Kode Part",
+        "Jenis Part",
+        "Nama Supplier",
+      ]
+    ];
   }
 
   // Text fields controllers
-  final TextEditingController _searchTextNamaPartController = TextEditingController();
-  final TextEditingController _searchTextKodePartController = TextEditingController();
-  final TextEditingController _searchTextJenisPartController = TextEditingController();
-  final TextEditingController _searchTextNamaSupplierController = TextEditingController();
+  final TextEditingController _searchTextNamaPartController =
+      TextEditingController();
+  final TextEditingController _searchTextKodePartController =
+      TextEditingController();
+  final TextEditingController _searchTextJenisPartController =
+      TextEditingController();
+  final TextEditingController _searchTextNamaSupplierController =
+      TextEditingController();
   final TextEditingController _namaPartController = TextEditingController();
   final TextEditingController _kodePartController = TextEditingController();
   final TextEditingController _jenisPartController = TextEditingController();
   final TextEditingController _namaSupplierController = TextEditingController();
 
   // Firestore collection reference
-  final CollectionReference _g1Supplier = FirebaseFirestore.instance.collection("g1_supplier");
+  final CollectionReference _g1Supplier =
+      FirebaseFirestore.instance.collection("g1_supplier");
   List<DocumentSnapshot> documents = [];
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getDataFromFirestore() {
-    return FirebaseFirestore.instance.collection('g1_supplier').orderBy("namaPart", descending: false).snapshots();
+    return FirebaseFirestore.instance
+        .collection('g1_supplier')
+        .orderBy("namaPart", descending: false)
+        .snapshots();
   }
 
   // Search text variable
@@ -117,9 +146,7 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                       ),
                       Center(
                         child: Text(
-                          action == "create"
-                              ? "Tambah Data"
-                              : "Update Data",
+                          action == "create" ? "Tambah Data" : "Update Data",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -149,7 +176,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -169,7 +197,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                       },
                                       controller: _namaPartController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Nama Part",
                                         hintText: "Masukkan Nama Part",
                                         prefixIcon: IconButton(
@@ -198,7 +227,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -218,7 +248,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                       },
                                       controller: _kodePartController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Kode Part",
                                         hintText: "Masukkan Kode Part",
                                         prefixIcon: IconButton(
@@ -247,7 +278,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -271,7 +303,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                       },
                                       controller: _jenisPartController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Jenis Part",
                                         hintText: "Masukkan Jenis Part",
                                         prefixIcon: IconButton(
@@ -287,7 +320,9 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                             _jenisPartController.text = value;
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return itemsJenisPart.map<PopupMenuItem<String>>((String value) {
+                                            return itemsJenisPart
+                                                .map<PopupMenuItem<String>>(
+                                                    (String value) {
                                               return PopupMenuItem(
                                                 value: value,
                                                 child: Text(
@@ -319,7 +354,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -339,11 +375,13 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                       },
                                       controller: _namaSupplierController,
                                       decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.all(10),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
                                         labelText: "Nama Supplier",
                                         hintText: "Masukkan Nama Supplier",
                                         prefixIcon: IconButton(
-                                          onPressed: _namaSupplierController.clear,
+                                          onPressed:
+                                              _namaSupplierController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                       ),
@@ -367,9 +405,7 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                   ),
                                 ),
                                 child: Text(
-                                  action == "create"
-                                      ? "Create"
-                                      : "Update",
+                                  action == "create" ? "Create" : "Update",
                                   style: TextStyle(
                                     color: action == "create"
                                         ? Colors.blue
@@ -388,7 +424,8 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                     content: SizedBox(
                                       height: 100,
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             action == "create"
@@ -407,12 +444,17 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                                       ElevatedButton(
                                         onPressed: () async {
                                           // Validate returns true if the form is valid, or false otherwise.
-                                          if (_formKey.currentState!.validate()) {
+                                          if (_formKey.currentState!
+                                              .validate()) {
                                             HapticFeedback.vibrate();
-                                            final String namaPart = _namaPartController.text;
-                                            final String kodePart = _kodePartController.text;
-                                            final String jenisPart = _jenisPartController.text;
-                                            final String namaSupplier = _namaSupplierController.text;
+                                            final String namaPart =
+                                                _namaPartController.text;
+                                            final String kodePart =
+                                                _kodePartController.text;
+                                            final String jenisPart =
+                                                _jenisPartController.text;
+                                            final String namaSupplier =
+                                                _namaSupplierController.text;
 
                                             if (action == "create") {
                                               // Persist a new product to Firestore
@@ -438,11 +480,13 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
 
                                             // Show a snackbar
                                             if (!mounted) return;
-                                            ScaffoldMessenger.of(context).showSnackBar(
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
                                               SnackBar(
-                                                backgroundColor: action == "create"
-                                                    ? Colors.yellow
-                                                    : Colors.grey,
+                                                backgroundColor:
+                                                    action == "create"
+                                                        ? Colors.yellow
+                                                        : Colors.grey,
                                                 content: Text(
                                                   action == "create"
                                                       ? "Successfully create data!"
@@ -533,7 +577,6 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
             Navigator.of(context).pop();
           },
         ),
-
         bottom: PreferredSize(
           preferredSize: const Size(0, 50),
           child: Row(
@@ -617,7 +660,7 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Apakah Anda ingin mendownload data ini?",
+                                "Apakah Anda ingin mengexport data ini?",
                               ),
                             ],
                           ),
@@ -712,226 +755,270 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
           ],
         ),
       ),
-
       endDrawer: Drawer(
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                  "Cari data berdasarkan:",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Nama Part",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Kode Part",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Jenis Part",
-                                ),
-                                Text(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  "• Nama Supplier",
-                                ),
-                              ],
-                            ),
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: _searchTextNamaPartController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextNamaPart = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "Masukkan Nama Part",
-                                  labelText: "Nama Part",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: _searchTextKodePartController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextKodePart = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "Masukkan Kode Part",
-                                  labelText: "Kode Part",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: _searchTextJenisPartController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextJenisPart = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "Masukkan Jenis Part",
-                                  labelText: "Jenis Part",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            color: Colors.white70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: TextField(
-                                controller: _searchTextNamaSupplierController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    searchTextNamaSupplier = value;
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: "Masukkan Nama Supplier",
-                                  labelText: "Nama Supplier",
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: const Text(
-                    "GESITS G1 Supplier",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      shadows: <Shadow>[
-                        Shadow(
-                          offset: Offset(1, 1),
-                          blurRadius: 2,
-                          color: Color.fromARGB(255, 0, 0, 0),
-                        ),
-                      ],
-                      color: Colors.lightGreen,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    bottom: 12,
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      "assets/images/img-g1.png",
-                      width: 120,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Image.asset(
-                        "assets/images/gesits-logo.png",
-                        width: 200,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Image.asset(
-                        "assets/images/wima-logo.png",
-                        width: 200,
-                      ),
-                    ),
-                  ],
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.cyan,
+                Color.fromARGB(
+                  200,
+                  30,
+                  220,
+                  190,
                 ),
               ],
             ),
-          ],
+          ),
+          child: ListView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.teal,
+                            Color.fromARGB(
+                              200,
+                              30,
+                              220,
+                              190,
+                            ),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                    "Cari data berdasarkan:",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Nama Part",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Kode Part",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Jenis Part",
+                                  ),
+                                  Text(
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    "• Nama Supplier",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  controller: _searchTextNamaPartController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextNamaPart = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Masukkan Nama Part",
+                                    labelText: "Nama Part",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  controller: _searchTextKodePartController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextKodePart = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Masukkan Kode Part",
+                                    labelText: "Kode Part",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  controller: _searchTextJenisPartController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextJenisPart = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Masukkan Jenis Part",
+                                    labelText: "Jenis Part",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              color: Colors.white70,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: TextField(
+                                  controller: _searchTextNamaSupplierController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchTextNamaSupplier = value;
+                                    });
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: "Masukkan Nama Supplier",
+                                    labelText: "Nama Supplier",
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: const Text(
+                      "GESITS G1 Supplier",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ],
+                        color: Colors.lightGreen,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 12,
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        "assets/images/img-g1.png",
+                        width: 120,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Image.asset(
+                          "assets/images/gesits-logo.png",
+                          width: 200,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Image.asset(
+                          "assets/images/wima-logo.png",
+                          width: 200,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.small(
+            tooltip: "Scroll Down",
+            backgroundColor: Colors.yellow,
+            onPressed: _scrollDown,
+            child: const Icon(
+              Icons.arrow_downward,
+              color: Colors.blue,
+            ),
+          ),
+          FloatingActionButton.small(
+            tooltip: "Scroll Up",
+            backgroundColor: Colors.blue,
+            onPressed: _scrollUp,
+            child: const Icon(
+              Icons.arrow_upward,
+              color: Colors.yellow,
+            ),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           getDataFromFirestore();
         },
         child: StreamBuilder<QuerySnapshot>(
-          stream: _g1Supplier
-              .orderBy("namaPart", descending: false)
-              .snapshots(),
+          stream:
+              _g1Supplier.orderBy("namaPart", descending: false).snapshots(),
           builder: (ctx, streamSnapshot) {
             if (streamSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -984,6 +1071,7 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
             }
 
             return ListView.builder(
+              controller: _scrollController,
               itemCount: documents.length,
               itemBuilder: (BuildContext context, int index) {
                 final DocumentSnapshot documentSnapshot = documents[index];
@@ -995,142 +1083,182 @@ class _G1SupplierScreenOperatorState extends State<G1SupplierScreenOperator> {
                   documentSnapshot.get("namaSupplier"),
                 ]);
 
-                return Card(
-                  color: Colors.white60,
-                  margin: const EdgeInsets.all(8),
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: Colors.red,
-                      width: 1,
+                return Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blueAccent,
+                      ),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Colors.green,
+                          Color.fromARGB(
+                            200,
+                            30,
+                            220,
+                            190,
+                          ),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: Text(
-                            "Nama Part: ${documentSnapshot["namaPart"]}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Nama Supplier: ${documentSnapshot["namaSupplier"]}",
-                            style: const TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                          trailing: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white70,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: SizedBox(
-                                  width: 100,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      // Press this button to edit a single product
-                                      IconButton(
-                                        tooltip: "Update",
-                                        color: Colors.orange,
-                                        icon: const Icon(
-                                          Icons.edit_outlined,
-                                        ),
-                                        onPressed: () => _createOrUpdate(documentSnapshot),
-                                      ),
-                                      // This icon button is used to delete a single product
-                                      IconButton(
-                                        tooltip: "Delete",
-                                        color: Colors.red,
-                                        icon: const Icon(
-                                          Icons.delete_outline,
-                                        ),
-                                        onPressed: () {
-                                          // Create a delete confirmation dialog
-                                          AlertDialog delete = AlertDialog(
-                                            title: const Text(
-                                              "Peringatan!",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            content: SizedBox(
-                                              height: 200,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            actions: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  _deleteProduct(documentSnapshot.id);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text(
-                                                  "Ya",
-                                                ),
-                                              ),
-                                              TextButton(
-                                                child: const Text(
-                                                  "Tidak",
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => delete,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text(
+                              "Nama Part: ${documentSnapshot["namaPart"]}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.cyanAccent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
+                            subtitle: Text(
+                              "Nama Supplier: ${documentSnapshot["namaSupplier"]}",
+                              style: const TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                            trailing: Column(
                               children: [
-                                Text(
-                                  "Kode Part: ${documentSnapshot["kodePart"]}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white70,
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                                Text(
-                                  "Jenis Part: ${documentSnapshot["jenisPart"]}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                  child: SizedBox(
+                                    width: 100,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Press this button to edit a single product
+                                        IconButton(
+                                          tooltip: "Update",
+                                          color: Colors.orange,
+                                          icon: const Icon(
+                                            Icons.edit_outlined,
+                                          ),
+                                          onPressed: () =>
+                                              _createOrUpdate(documentSnapshot),
+                                        ),
+                                        // This icon button is used to delete a single product
+                                        IconButton(
+                                          tooltip: "Delete",
+                                          color: Colors.red,
+                                          icon: const Icon(
+                                            Icons.delete_outline,
+                                          ),
+                                          onPressed: () {
+                                            // Create a delete confirmation dialog
+                                            AlertDialog delete = AlertDialog(
+                                              title: const Text(
+                                                "Peringatan!",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              content: SizedBox(
+                                                height: 200,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    _deleteProduct(
+                                                        documentSnapshot.id);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text(
+                                                    "Ya",
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  child: const Text(
+                                                    "Tidak",
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => delete,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.cyanAccent,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Kode Part: ${documentSnapshot["kodePart"]}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Jenis Part: ${documentSnapshot["jenisPart"]}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Colors.blue,
+                                          Color.fromARGB(
+                                            200,
+                                            30,
+                                            220,
+                                            190,
+                                          ),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Text(
+                                        "Document ID: ${documentSnapshot.id}",
+                                        style: GoogleFonts.amiri(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -1152,17 +1280,18 @@ generateCsv() async {
     final bytes = utf8.encode(csvData);
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.document.createElement("a") as html.AnchorElement..href = url..style.display = "none"..download = "G1_Supplier_Parts_$formattedDate.csv";
+    final anchor = html.document.createElement("a") as html.AnchorElement
+      ..href = url
+      ..style.display = "none"
+      ..download = "G1_Supplier_Parts_$formattedDate.csv";
     html.document.body!.children.add(anchor);
     anchor.click();
     html.Url.revokeObjectUrl(url);
-  }
-
-  else if (Platform.isAndroid) {
+  } else if (Platform.isAndroid) {
     Directory generalDownloadDir = Directory("storage/emulated/0/Download");
     final File file = await (File(
-        "${generalDownloadDir.path}/G1_Supplier_Parts_$formattedDate.csv"
-    ).create());
+            "${generalDownloadDir.path}/G1_Supplier_Parts_$formattedDate.csv")
+        .create());
     await file.writeAsString(csvData);
   }
 }

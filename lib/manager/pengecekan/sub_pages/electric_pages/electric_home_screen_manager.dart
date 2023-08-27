@@ -10,7 +10,8 @@ class ElectricHomeScreenManager extends StatefulWidget {
   State<StatefulWidget> createState() => _ElectricHomeScreenManagerState();
 }
 
-class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager> with TickerProviderStateMixin {
+class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
+    with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -52,7 +53,6 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager> w
           ),
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -103,224 +103,229 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager> w
               const SizedBox(
                 height: 10,
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/sp.gif",
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const Text(
-                                "Electric Parts",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Hero(
-                                tag: "img-electric-part",
-                                child: Image.asset(
-                                  "assets/images/img-electric-part.png",
-                                  width: 100,
-                                ),
-                              ),
-                            ],
+              Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Text(
+                            "Electric Parts",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  child: Material(
-                                    color: const Color(0xa69fe512),
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(20),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => const G1ElectricScreenManager(),
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(14),
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(
-                                              height: 12,
-                                            ),
-                                            Center(
-                                              child: ScaleTransition(
-                                                scale: _animation,
-                                                child: Image.asset(
-                                                  "assets/images/img-g1.png",
-                                                  width: 120,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Hero(
-                                              tag: "gesits-logo-g1",
-                                              child: Image.asset(
-                                                "assets/images/gesits-logo.png",
-                                                width: 80,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            const Text(
-                                              "G1",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            FutureBuilder<QuerySnapshot>(
-                                              future: FirebaseFirestore.instance.collection("g1_electric_parts").get(), // Fetch the documents in the collection
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                                }
-                                                if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                }
-                                                if (!snapshot.hasData) {
-                                                  return const Text('No data found!');
-                                                }
-
-                                                int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                                return Text(
-                                                  "$totalDocuments Documents Found!",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  child: Material(
-                                    color: const Color(0xa6a5b007),
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(20),
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => const RayaElectricScreenManager(),
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(14),
-                                        child: Column(
-                                          children: [
-                                            Center(
-                                              child: ScaleTransition(
-                                                scale: _animation,
-                                                child: Image.asset(
-                                                  "assets/images/img-raya.png",
-                                                  width: 120,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Hero(
-                                              tag: "gesits-logo-raya",
-                                              child: Image.asset(
-                                                "assets/images/gesits-logo.png",
-                                                width: 80,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            const Text(
-                                              "Raya",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            FutureBuilder<QuerySnapshot>(
-                                              future: FirebaseFirestore.instance.collection("raya_electric_parts").get(), // Fetch the documents in the collection
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator(); // Display a loading indicator while fetching data
-                                                }
-                                                if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                }
-                                                if (!snapshot.hasData) {
-                                                  return const Text('No data found!');
-                                                }
-
-                                                int totalDocuments = snapshot.data!.size; // Get the total number of documents
-                                                return Text(
-                                                  "$totalDocuments Documents Found!",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Hero(
+                            tag: "img-electric-part",
+                            child: Image.asset(
+                              "assets/images/img-electric-part.png",
+                              width: 100,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Material(
+                                color: const Color(0xa69fe512),
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const G1ElectricScreenManager(),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 12,
+                                        ),
+                                        Center(
+                                          child: ScaleTransition(
+                                            scale: _animation,
+                                            child: Image.asset(
+                                              "assets/images/img-g1.png",
+                                              width: 120,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Hero(
+                                          tag: "gesits-logo-g1",
+                                          child: Image.asset(
+                                            "assets/images/gesits-logo.png",
+                                            width: 80,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Text(
+                                          "G1",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        FutureBuilder<QuerySnapshot>(
+                                          future: FirebaseFirestore.instance
+                                              .collection("g1_electric_parts")
+                                              .get(), // Fetch the documents in the collection
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error: ${snapshot.error}');
+                                            }
+                                            if (!snapshot.hasData) {
+                                              return const Text(
+                                                  'No data found!');
+                                            }
+
+                                            int totalDocuments = snapshot.data!
+                                                .size; // Get the total number of documents
+                                            return Text(
+                                              "$totalDocuments Documents Found!",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Material(
+                                color: const Color(0xa6a5b007),
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RayaElectricScreenManager(),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: ScaleTransition(
+                                            scale: _animation,
+                                            child: Image.asset(
+                                              "assets/images/img-raya.png",
+                                              width: 120,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Hero(
+                                          tag: "gesits-logo-raya",
+                                          child: Image.asset(
+                                            "assets/images/gesits-logo.png",
+                                            width: 80,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Text(
+                                          "Raya",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        FutureBuilder<QuerySnapshot>(
+                                          future: FirebaseFirestore.instance
+                                              .collection("raya_electric_parts")
+                                              .get(), // Fetch the documents in the collection
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const CircularProgressIndicator(); // Display a loading indicator while fetching data
+                                            }
+                                            if (snapshot.hasError) {
+                                              return Text(
+                                                  'Error: ${snapshot.error}');
+                                            }
+                                            if (!snapshot.hasData) {
+                                              return const Text(
+                                                  'No data found!');
+                                            }
+
+                                            int totalDocuments = snapshot.data!
+                                                .size; // Get the total number of documents
+                                            return Text(
+                                              "$totalDocuments Documents Found!",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

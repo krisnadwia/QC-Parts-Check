@@ -12,16 +12,15 @@ class G1GraphHomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _G1GraphHomeScreenState();
 }
 
-class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProviderStateMixin {
-
+class _G1GraphHomeScreenState extends State<G1GraphHomeScreen>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
 
     // Retrieve logged in user data
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -66,7 +65,6 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
           ),
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -114,30 +112,20 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
                   ),
                 ],
               ),
-              Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/hs.gif",
-                      height: 100,
-                    ),
-                  ),
-                  Center(
-                    child: ScaleTransition(
-                      scale: _animation,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Hero(
-                          tag: "g1-samping",
-                          child: Image.asset(
-                            "assets/images/g1-samping.png",
-                            width: 140,
-                          ),
-                        ),
+              Center(
+                child: ScaleTransition(
+                  scale: _animation,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Hero(
+                      tag: "g1-samping",
+                      child: Image.asset(
+                        "assets/images/g1-samping.png",
+                        width: 140,
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
               Center(
                 child: Column(
@@ -160,14 +148,16 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const G1MetalGraphScreen(),
+                                  builder: (context) =>
+                                      const G1MetalGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-metal-part",
@@ -211,14 +201,16 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const G1PlasticGraphScreen(),
+                                  builder: (context) =>
+                                      const G1PlasticGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-plastic-part",
@@ -262,14 +254,16 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const G1GeneralGraphScreen(),
+                                  builder: (context) =>
+                                      const G1GeneralGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-general-part",
@@ -313,14 +307,16 @@ class _G1GraphHomeScreenState extends State<G1GraphHomeScreen> with TickerProvid
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const G1ElectricGraphScreen(),
+                                  builder: (context) =>
+                                      const G1ElectricGraphScreen(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-electric-part",

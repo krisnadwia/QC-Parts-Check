@@ -12,7 +12,8 @@ class RegisterScreenOperator extends StatefulWidget {
   State<RegisterScreenOperator> createState() => _RegisterScreenOperatorState();
 }
 
-class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with TickerProviderStateMixin {
+class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
+    with TickerProviderStateMixin {
   String _pwd = "";
   String _mail = "";
   String _displayName = "";
@@ -21,7 +22,8 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with Ti
   bool _isObscure = true;
   bool _isLoading = false;
 
-  final TextEditingController _roleController = TextEditingController(text: "Operator");
+  final TextEditingController _roleController =
+      TextEditingController(text: "Operator");
 
   @override
   void initState() {
@@ -29,8 +31,7 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with Ti
 
     // Retrieve logged in user data
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -88,7 +89,6 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with Ti
           },
         ),
       ),
-
       body: Material(
         child: Container(
           decoration: const BoxDecoration(
@@ -160,27 +160,17 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with Ti
               ),
               Column(
                 children: [
-                  Stack(
-                    children: [
-                      Center(
+                  Center(
+                    child: ScaleTransition(
+                      scale: _animation,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
                         child: Image.asset(
-                          "assets/images/rs.gif",
-                          height: 250,
+                          "assets/images/img-registerscreen.png",
+                          width: 300,
                         ),
                       ),
-                      Center(
-                        child: ScaleTransition(
-                          scale: _animation,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Image.asset(
-                              "assets/images/img-registerscreen.png",
-                              width: 300,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -448,28 +438,29 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with Ti
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor: res == null
-                            ? Colors.green
-                            : Colors.red,
+                        backgroundColor:
+                            res == null ? Colors.green : Colors.red,
                         content: Text(
                           res ?? "Selamat, Akun Berhasil Dibuat!",
                         ),
                       ),
                     );
                   },
-                  child: (_isLoading) ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                      strokeWidth: 1.5,
-                    ),
-                  ) : const Text(
-                    "Buat Akun",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
+                  child: (_isLoading)
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                            strokeWidth: 1.5,
+                          ),
+                        )
+                      : const Text(
+                          "Buat Akun",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
                 ),
               ),
               Padding(
