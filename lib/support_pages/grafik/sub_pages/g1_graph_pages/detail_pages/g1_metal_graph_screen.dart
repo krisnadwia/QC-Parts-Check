@@ -195,7 +195,7 @@ class _G1MetalGraphScreenState extends State<G1MetalGraphScreen> {
           text: "x = Tanggal Pengecekan \n y = Quantity",
         ),
         // Enable legend
-        legend: const Legend(
+        legend: Legend(
           isVisible: true,
         ),
         zoomPanBehavior: _zoomPanBehavior,

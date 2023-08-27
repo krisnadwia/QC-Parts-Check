@@ -46,7 +46,7 @@ dependencies:
   url_launcher: ^6.1.12
   flutter_linkify: ^6.0.0
   pie_chart: ^5.3.2
-  syncfusion_flutter_charts: ^22.2.8
+  syncfusion_flutter_charts: ^20.4.50
   universal_html: ^2.2.3
   csv: ^5.0.2
   slide_digital_clock: ^1.0.3

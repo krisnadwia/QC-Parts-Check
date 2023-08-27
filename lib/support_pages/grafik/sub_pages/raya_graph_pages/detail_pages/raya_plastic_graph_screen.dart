@@ -195,7 +195,7 @@ class _RayaPlasticGraphScreenState extends State<RayaPlasticGraphScreen> {
           text: "x = Tanggal Pengecekan \n y = Quantity",
         ),
         // Enable legend
-        legend: const Legend(
+        legend: Legend(
           isVisible: true,
         ),
         zoomPanBehavior: _zoomPanBehavior,

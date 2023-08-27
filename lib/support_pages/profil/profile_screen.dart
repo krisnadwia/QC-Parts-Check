@@ -310,43 +310,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               }
               var document = snapshot.data!;
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: ListView(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Hero(
-                            tag: "wima-logo",
-                            child: Image.asset(
-                              "assets/images/wima-logo.png",
-                              width: 150,
-                            ),
+              return ListView(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Hero(
+                          tag: "wima-logo",
+                          child: Image.asset(
+                            "assets/images/wima-logo.png",
+                            width: 150,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Hero(
-                            tag: "gesits-logo",
-                            child: Image.asset(
-                              "assets/images/gesits-logo.png",
-                              width: 150,
-                            ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Hero(
+                          tag: "gesits-logo",
+                          child: Image.asset(
+                            "assets/images/gesits-logo.png",
+                            width: 150,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Image.asset(
-                      "assets/images/avatar.gif",
-                      height: 120,
-                    ),
-                    Row(
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Image.asset(
+                    "assets/images/avatar.gif",
+                    height: 120,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
@@ -382,10 +382,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
                       margin: const EdgeInsets.only(
                         top: 10,
                         bottom: 10,
@@ -536,8 +539,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           ),

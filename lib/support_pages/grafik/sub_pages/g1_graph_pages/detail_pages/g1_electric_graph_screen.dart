@@ -195,7 +195,7 @@ class _G1ElectricGraphScreenState extends State<G1ElectricGraphScreen> {
           text: "x = Tanggal Pengecekan \n y = Quantity",
         ),
         // Enable legend
-        legend: const Legend(
+        legend: Legend(
           isVisible: true,
         ),
         zoomPanBehavior: _zoomPanBehavior,
