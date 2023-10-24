@@ -10,8 +10,7 @@ class PlasticHomeScreenManager extends StatefulWidget {
   State<StatefulWidget> createState() => _PlasticHomeScreenManagerState();
 }
 
-class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
-    with TickerProviderStateMixin {
+class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager> with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -36,14 +35,6 @@ class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          const Text(
-            "Manager",
-          ),
-          Image.asset(
-            "assets/images/manager.gif",
-          ),
-        ],
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -162,8 +153,7 @@ class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const G1PlasticScreenManager(),
+                                        builder: (context) => const G1PlasticScreenManager(),
                                       ),
                                     );
                                   },
@@ -208,21 +198,18 @@ class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
                                               .collection("g1_plastic_parts")
                                               .get(), // Fetch the documents in the collection
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const CircularProgressIndicator(); // Display a loading indicator while fetching data
                                             }
                                             if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
+                                              return Text('Error: ${snapshot.error}');
                                             }
                                             if (!snapshot.hasData) {
-                                              return const Text(
-                                                  'No data found!');
+                                              return const Text('No data found!');
                                             }
 
-                                            int totalDocuments = snapshot.data!
-                                                .size; // Get the total number of documents
+                                            int totalDocuments =
+                                                snapshot.data!.size; // Get the total number of documents
                                             return Text(
                                               "$totalDocuments Documents Found!",
                                               style: const TextStyle(
@@ -256,8 +243,7 @@ class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RayaPlasticScreenManager(),
+                                        builder: (context) => const RayaPlasticScreenManager(),
                                       ),
                                     );
                                   },
@@ -299,21 +285,18 @@ class _PlasticHomeScreenManagerState extends State<PlasticHomeScreenManager>
                                               .collection("raya_plastic_parts")
                                               .get(), // Fetch the documents in the collection
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const CircularProgressIndicator(); // Display a loading indicator while fetching data
                                             }
                                             if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
+                                              return Text('Error: ${snapshot.error}');
                                             }
                                             if (!snapshot.hasData) {
-                                              return const Text(
-                                                  'No data found!');
+                                              return const Text('No data found!');
                                             }
 
-                                            int totalDocuments = snapshot.data!
-                                                .size; // Get the total number of documents
+                                            int totalDocuments =
+                                                snapshot.data!.size; // Get the total number of documents
                                             return Text(
                                               "$totalDocuments Documents Found!",
                                               style: const TextStyle(

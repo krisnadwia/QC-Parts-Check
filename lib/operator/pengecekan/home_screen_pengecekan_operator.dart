@@ -7,6 +7,7 @@ import 'package:qc_parts_check/operator/pengecekan/sub_pages/general_pages/gener
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/metal_pages/metal_home_screen_operator.dart';
 import 'package:qc_parts_check/operator/pengecekan/sub_pages/plastic_pages/plastic_home_screen_operator.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
+import 'package:ticker_text/ticker_text.dart';
 
 class HomeScreenPengecekanOperator extends StatefulWidget {
   const HomeScreenPengecekanOperator({super.key});
@@ -15,10 +16,8 @@ class HomeScreenPengecekanOperator extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeScreenPengecekanOperatorState();
 }
 
-class _HomeScreenPengecekanOperatorState
-    extends State<HomeScreenPengecekanOperator> with TickerProviderStateMixin {
-  String date =
-      DateFormat("EEEEE, dd/MMMM/yyyy", "id_ID").format(DateTime.now());
+class _HomeScreenPengecekanOperatorState extends State<HomeScreenPengecekanOperator> with TickerProviderStateMixin {
+  String date = DateFormat("EEEEE, dd/MMMM/yyyy", "id_ID").format(DateTime.now());
 
   User? _user;
 
@@ -65,12 +64,24 @@ class _HomeScreenPengecekanOperatorState
             color: Colors.black,
           ),
         ),
-        actions: [
-          const Text(
-            "Operator",
-          ),
-          Image.asset(
-            "assets/images/operator.gif",
+        actions: const [
+          SizedBox(
+            width: 130, // constrain the parent width so the child overflows and scrolling takes effect
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TickerText(
+                // default values
+                // controller: tickerTextController, // this is optional
+                scrollDirection: Axis.horizontal,
+                speed: 30,
+                startPauseDuration: Duration(seconds: 1),
+                endPauseDuration: Duration(seconds: 1),
+                returnDuration: Duration(milliseconds: 100),
+                primaryCurve: Curves.linear,
+                returnCurve: Curves.easeOut,
+                child: Text("Operator Incoming Area"),
+              ),
+            ),
           ),
         ],
       ),
@@ -142,14 +153,9 @@ class _HomeScreenPengecekanOperatorState
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DigitalClock(
-                        hourMinuteDigitTextStyle: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.black),
-                        secondDigitTextStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.black),
+                        hourMinuteDigitTextStyle:
+                            Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.black),
+                        secondDigitTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
                         colon: const Text(
                           ":",
                         ),
@@ -258,16 +264,14 @@ class _HomeScreenPengecekanOperatorState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MetalHomeScreenOperator(),
+                                  builder: (context) => const MetalHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-metal-part",
@@ -311,16 +315,14 @@ class _HomeScreenPengecekanOperatorState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PlasticHomeScreenOperator(),
+                                  builder: (context) => const PlasticHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-plastic-part",
@@ -364,16 +366,14 @@ class _HomeScreenPengecekanOperatorState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const GeneralHomeScreenOperator(),
+                                  builder: (context) => const GeneralHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-general-part",
@@ -417,16 +417,14 @@ class _HomeScreenPengecekanOperatorState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ElectricHomeScreenOperator(),
+                                  builder: (context) => const ElectricHomeScreenOperator(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-electric-part",

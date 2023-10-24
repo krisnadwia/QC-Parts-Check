@@ -7,6 +7,7 @@ import 'package:qc_parts_check/manager/pengecekan/sub_pages/general_pages/genera
 import 'package:qc_parts_check/manager/pengecekan/sub_pages/metal_pages/metal_home_screen_manager.dart';
 import 'package:qc_parts_check/manager/pengecekan/sub_pages/plastic_pages/plastic_home_screen_manager.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
+import 'package:ticker_text/ticker_text.dart';
 
 class HomeScreenPengecekanManager extends StatefulWidget {
   const HomeScreenPengecekanManager({super.key});
@@ -15,10 +16,10 @@ class HomeScreenPengecekanManager extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeScreenPengecekanManagerState();
 }
 
-class _HomeScreenPengecekanManagerState
-    extends State<HomeScreenPengecekanManager> with TickerProviderStateMixin {
-  String date =
-      DateFormat("EEEEE, dd/MMMM/yyyy", "id_ID").format(DateTime.now());
+class _HomeScreenPengecekanManagerState extends State<HomeScreenPengecekanManager> with TickerProviderStateMixin {
+  List<DocumentSnapshot> documents = [];
+
+  String date = DateFormat("EEEEE, dd/MMMM/yyyy", "id_ID").format(DateTime.now());
 
   User? _user;
 
@@ -65,14 +66,104 @@ class _HomeScreenPengecekanManagerState
             color: Colors.black,
           ),
         ),
-        actions: [
-          const Text(
-            "Manager",
-          ),
-          Image.asset(
-            "assets/images/manager.gif",
+        actions: const [
+          SizedBox(
+            width: 130, // constrain the parent width so the child overflows and scrolling takes effect
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TickerText(
+                // default values
+                // controller: tickerTextController, // this is optional
+                scrollDirection: Axis.horizontal,
+                speed: 30,
+                startPauseDuration: Duration(seconds: 1),
+                endPauseDuration: Duration(seconds: 1),
+                returnDuration: Duration(milliseconds: 100),
+                primaryCurve: Curves.linear,
+                returnCurve: Curves.easeOut,
+                child: Text("Manager Quality Control"),
+              ),
+            ),
           ),
         ],
+      ),
+      endDrawer: Drawer(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.cyan,
+                Color.fromARGB(
+                  200,
+                  30,
+                  220,
+                  190,
+                ),
+              ],
+            ),
+          ),
+          child: StreamBuilder<QuerySnapshot>(
+            stream:
+                FirebaseFirestore.instance.collection('notifikasi').orderBy("timeStamp", descending: true).snapshots(),
+            builder: (ctx, streamSnapshot) {
+              if (streamSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
+                  ),
+                );
+              }
+              documents = (streamSnapshot.data!).docs;
+              return ListView.builder(
+                itemCount: documents.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final DocumentSnapshot documentSnapshot = documents[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                        ),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.teal,
+                            Color.fromARGB(
+                              200,
+                              30,
+                              220,
+                              190,
+                            ),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              documentSnapshot["keteranganNotifikasi"],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["timeStamp"],
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
       ),
       body: Material(
         child: Container(
@@ -96,6 +187,18 @@ class _HomeScreenPengecekanManagerState
           ),
           child: ListView(
             children: [
+              Builder(
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.circle_notifications),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    label: const Text(
+                      "Buka Notifikasi",
+                    ),
+                  ),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -142,14 +245,9 @@ class _HomeScreenPengecekanManagerState
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: DigitalClock(
-                        hourMinuteDigitTextStyle: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(color: Colors.black),
-                        secondDigitTextStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.black),
+                        hourMinuteDigitTextStyle:
+                            Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.black),
+                        secondDigitTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black),
                         colon: const Text(
                           ":",
                         ),
@@ -258,16 +356,14 @@ class _HomeScreenPengecekanManagerState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const MetalHomeScreenManager(),
+                                  builder: (context) => const MetalHomeScreenManager(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-metal-part",
@@ -311,16 +407,14 @@ class _HomeScreenPengecekanManagerState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PlasticHomeScreenManager(),
+                                  builder: (context) => const PlasticHomeScreenManager(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-plastic-part",
@@ -364,16 +458,14 @@ class _HomeScreenPengecekanManagerState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const GeneralHomeScreenManager(),
+                                  builder: (context) => const GeneralHomeScreenManager(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(6),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-general-part",
@@ -417,16 +509,14 @@ class _HomeScreenPengecekanManagerState
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ElectricHomeScreenManager(),
+                                  builder: (context) => const ElectricHomeScreenManager(),
                                 ),
                               );
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   Hero(
                                     tag: "img-electric-part",

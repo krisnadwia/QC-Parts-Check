@@ -16,7 +16,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     );
 
     return Timer(
-      duration, () {
+      duration,
+      () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const GreetingsScreen(),

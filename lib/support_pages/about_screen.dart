@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // URL function
@@ -70,27 +69,25 @@ class AboutScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(20),
-                      child: Text(
+                      child: const Text(
                         "About Application",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.amarante(
-                          fontSize: 35,
-                          color: Colors.brown,
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
                       ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 10,
                     ),
                     Container(
                       padding: const EdgeInsets.all(20),
-                      child: Text(
+                      child: const Text(
                         "Application for Checking and Archiving GESITS Electric Motorcycle Part Data in the Incoming Area",
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.amiri(
+                        style: TextStyle(
                           fontSize: 20,
-                          color: Colors.black,
                         ),
                       ),
                     ),

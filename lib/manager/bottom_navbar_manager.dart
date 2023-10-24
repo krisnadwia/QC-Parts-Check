@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qc_parts_check/manager/pengecekan/home_screen_pengecekan_manager.dart';
-import 'package:qc_parts_check/manager/supplier/home_screen_supplier_manager.dart';
 import 'package:qc_parts_check/support_pages/profil/profile_screen.dart';
-import '../support_pages/grafik/home_screen_graph.dart';
 import '../utils/logout_popup.dart';
 
 class BottomNavbarManager extends StatefulWidget {
@@ -33,6 +31,8 @@ class _BottomNavbarManagerState extends State<BottomNavbarManager> {
     return WillPopScope(
       onWillPop: () => showLogoutPopup(context),
       child: Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.transparent,
         body: SizedBox.expand(
           child: PageView(
             controller: _pageController,
@@ -41,43 +41,54 @@ class _BottomNavbarManagerState extends State<BottomNavbarManager> {
             },
             children: const [
               HomeScreenPengecekanManager(),
-              HomeScreenSupplierManager(),
-              HomeScreenGraph(),
               ProfileScreen(),
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          unselectedItemColor: Colors.black,
-          selectedItemColor: Colors.white,
-          onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_customize_outlined),
-              tooltip: "Pengecekan",
-              label: "Pengecekan",
-              backgroundColor: Colors.orange,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.construction),
-              tooltip: "Part",
-              label: "Part",
-              backgroundColor: Colors.green,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.monitor_heart_outlined),
-              tooltip: "Grafik",
-              label: "Grafik",
-              backgroundColor: Colors.blue,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              tooltip: "Profil",
-              label: "Profil",
-              backgroundColor: Colors.grey,
-            ),
-          ],
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(24),
+            topLeft: Radius.circular(24),
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Colors.amber,
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.black45,
+            onTap: _onItemTapped,
+            items: [
+              BottomNavigationBarItem(
+                activeIcon: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.dashboard_customize_outlined),
+                  ),
+                ),
+                icon: const Icon(Icons.dashboard_customize_outlined),
+                tooltip: "Pengecekan",
+                label: "Pengecekan",
+              ),
+              BottomNavigationBarItem(
+                activeIcon: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.person),
+                  ),
+                ),
+                icon: const Icon(Icons.person),
+                tooltip: "Profil",
+                label: "Profil",
+              ),
+            ],
+          ),
         ),
       ),
     );

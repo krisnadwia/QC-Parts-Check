@@ -11,8 +11,7 @@ class RegisterScreenManager extends StatefulWidget {
   State<RegisterScreenManager> createState() => _RegisterScreenManagerState();
 }
 
-class _RegisterScreenManagerState extends State<RegisterScreenManager>
-    with TickerProviderStateMixin {
+class _RegisterScreenManagerState extends State<RegisterScreenManager> with TickerProviderStateMixin {
   String _pwd = "";
   String _mail = "";
   String _displayName = "";
@@ -21,8 +20,7 @@ class _RegisterScreenManagerState extends State<RegisterScreenManager>
   bool _isObscure = true;
   bool _isLoading = false;
 
-  final TextEditingController _roleController =
-      TextEditingController(text: "Manager");
+  final TextEditingController _roleController = TextEditingController(text: "Manager");
 
   @override
   void initState() {
@@ -342,9 +340,7 @@ class _RegisterScreenManagerState extends State<RegisterScreenManager>
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isObscure
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                                    _isObscure ? Icons.visibility : Icons.visibility_off,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -413,7 +409,6 @@ class _RegisterScreenManagerState extends State<RegisterScreenManager>
                     ),
                   ),
                   onPressed: () async {
-                    HapticFeedback.vibrate();
                     var res = await Auth.mailRegister(
                       _mail,
                       _pwd,
@@ -437,8 +432,7 @@ class _RegisterScreenManagerState extends State<RegisterScreenManager>
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor:
-                            res == null ? Colors.green : Colors.red,
+                        backgroundColor: res == null ? Colors.green : Colors.red,
                         content: Text(
                           res ?? "Selamat, Akun Berhasil Dibuat!",
                         ),

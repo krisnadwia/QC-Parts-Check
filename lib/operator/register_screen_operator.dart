@@ -12,8 +12,7 @@ class RegisterScreenOperator extends StatefulWidget {
   State<RegisterScreenOperator> createState() => _RegisterScreenOperatorState();
 }
 
-class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
-    with TickerProviderStateMixin {
+class _RegisterScreenOperatorState extends State<RegisterScreenOperator> with TickerProviderStateMixin {
   String _pwd = "";
   String _mail = "";
   String _displayName = "";
@@ -22,8 +21,7 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
   bool _isObscure = true;
   bool _isLoading = false;
 
-  final TextEditingController _roleController =
-      TextEditingController(text: "Operator");
+  final TextEditingController _roleController = TextEditingController(text: "Operator");
 
   @override
   void initState() {
@@ -343,9 +341,7 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    _isObscure
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                                    _isObscure ? Icons.visibility : Icons.visibility_off,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -414,7 +410,6 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
                     ),
                   ),
                   onPressed: () async {
-                    HapticFeedback.vibrate();
                     var res = await Auth.mailRegister(
                       _mail,
                       _pwd,
@@ -438,8 +433,7 @@ class _RegisterScreenOperatorState extends State<RegisterScreenOperator>
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor:
-                            res == null ? Colors.green : Colors.red,
+                        backgroundColor: res == null ? Colors.green : Colors.red,
                         content: Text(
                           res ?? "Selamat, Akun Berhasil Dibuat!",
                         ),

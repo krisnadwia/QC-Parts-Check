@@ -17,7 +17,7 @@ Future<bool> showExitPopup(context) async {
           ),
         ),
         content: SizedBox(
-          height: 120,
+          height: 150,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

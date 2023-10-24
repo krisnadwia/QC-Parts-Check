@@ -10,8 +10,7 @@ class ElectricHomeScreenManager extends StatefulWidget {
   State<StatefulWidget> createState() => _ElectricHomeScreenManagerState();
 }
 
-class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
-    with TickerProviderStateMixin {
+class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager> with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -154,8 +153,7 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const G1ElectricScreenManager(),
+                                        builder: (context) => const G1ElectricScreenManager(),
                                       ),
                                     );
                                   },
@@ -200,21 +198,18 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
                                               .collection("g1_electric_parts")
                                               .get(), // Fetch the documents in the collection
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const CircularProgressIndicator(); // Display a loading indicator while fetching data
                                             }
                                             if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
+                                              return Text('Error: ${snapshot.error}');
                                             }
                                             if (!snapshot.hasData) {
-                                              return const Text(
-                                                  'No data found!');
+                                              return const Text('No data found!');
                                             }
 
-                                            int totalDocuments = snapshot.data!
-                                                .size; // Get the total number of documents
+                                            int totalDocuments =
+                                                snapshot.data!.size; // Get the total number of documents
                                             return Text(
                                               "$totalDocuments Documents Found!",
                                               style: const TextStyle(
@@ -248,8 +243,7 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RayaElectricScreenManager(),
+                                        builder: (context) => const RayaElectricScreenManager(),
                                       ),
                                     );
                                   },
@@ -291,21 +285,18 @@ class _ElectricHomeScreenManagerState extends State<ElectricHomeScreenManager>
                                               .collection("raya_electric_parts")
                                               .get(), // Fetch the documents in the collection
                                           builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
                                               return const CircularProgressIndicator(); // Display a loading indicator while fetching data
                                             }
                                             if (snapshot.hasError) {
-                                              return Text(
-                                                  'Error: ${snapshot.error}');
+                                              return Text('Error: ${snapshot.error}');
                                             }
                                             if (!snapshot.hasData) {
-                                              return const Text(
-                                                  'No data found!');
+                                              return const Text('No data found!');
                                             }
 
-                                            int totalDocuments = snapshot.data!
-                                                .size; // Get the total number of documents
+                                            int totalDocuments =
+                                                snapshot.data!.size; // Get the total number of documents
                                             return Text(
                                               "$totalDocuments Documents Found!",
                                               style: const TextStyle(

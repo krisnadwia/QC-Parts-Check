@@ -2,34 +2,118 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:csv/csv.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+
+class HeroPhotoViewRouteWrapper extends StatelessWidget {
+  const HeroPhotoViewRouteWrapper({
+    super.key,
+    required this.imageProvider,
+    this.backgroundDecoration,
+    this.minScale,
+    this.maxScale,
+  });
+
+  final ImageProvider imageProvider;
+  final BoxDecoration? backgroundDecoration;
+  final dynamic minScale;
+  final dynamic maxScale;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Photo View",
+        ),
+        flexibleSpace: Material(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment(0.8, 1),
+                colors: <Color>[
+                  Color(0x28e3caca),
+                  Color(0x2ad8de32),
+                  Color(0x49ead66e),
+                ],
+                // Gradient from https://learnui.design/tools/gradient-generator.html
+                tileMode: TileMode.mirror,
+              ),
+            ),
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+          ),
+          tooltip: "Kembali",
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: PhotoView(
+          imageProvider: imageProvider,
+          backgroundDecoration: backgroundDecoration,
+          minScale: minScale,
+          maxScale: maxScale,
+          heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),
+        ),
+      ),
+    );
+  }
+}
+
+class PDFScreen extends StatelessWidget {
+  final Uint8List pdfBytes;
+
+  const PDFScreen(this.pdfBytes, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            final blob = html.Blob([pdfBytes]);
+            final url = html.Url.createObjectUrlFromBlob(blob);
+            html.AnchorElement(href: url)
+              ..target = '_blank'
+              ..download = 'doc.pdf'
+              ..click();
+            html.Url.revokeObjectUrl(url);
+          },
+          child: const Text('Download PDF'),
+        ),
+      ),
+    );
+  }
+}
 
 // For CSV Export
 List<List<String>> itemList = [];
-
-// URL function
-_launchURL() async {
-  const url = "https://postimages.org";
-  final uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
-  } else {
-    throw "Could not launch $url";
-  }
-}
 
 class RayaPlasticScreenOperator extends StatefulWidget {
   const RayaPlasticScreenOperator({super.key});
@@ -39,6 +123,416 @@ class RayaPlasticScreenOperator extends StatefulWidget {
 }
 
 class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
+  // Create a timestamp
+  DateTime currentDateTime = DateTime.now();
+
+  // Fungsi untuk mengambil data berdasarkan documentId
+  Future<DocumentSnapshot> fetchDataById(String documentId) async {
+    DocumentSnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection('raya_plastic_parts').doc(documentId).get();
+    return documentSnapshot;
+  }
+
+  // Fungsi untuk membuat PDF dari data dokumen
+  Future<Uint8List> _createPDF(DocumentSnapshot document) async {
+    final pdf = pw.Document();
+
+    final namaPart = document['namaPart'].toString();
+    final namaSupplier = document['namaSupplier'].toString();
+    final tanggalKedatangan = document['tanggalKedatangan'].toString();
+    final jumlahTotal = document['jumlahTotal'].toString();
+    final tanggalPengecekan = document['tanggalPengecekan'].toString();
+    final jumlahOk = document['jumlahOk'].toString();
+    final jumlahNg = document['jumlahNg'].toString();
+    final catatan = document['catatan'].toString();
+    final buktiPengecekan = document['buktiPengecekan'].toString();
+    final ditambahkanOleh = document['ditambahkanOleh'].toString();
+    final statusValidasi = document['statusValidasi'].toString();
+    final divalidasiOleh = document['divalidasiOleh'].toString();
+    final tanggalReturn = document['tanggalReturn'].toString();
+    final direturnOleh = document['direturnOleh'].toString();
+
+    // Mendownload gambar dan menyimpannya di cache sementara
+    final fileBuktiPengecekan = await DefaultCacheManager().getSingleFile(buktiPengecekan);
+
+    final ByteData ptLogo = await rootBundle.load('assets/images/wima-logo.png');
+    final Uint8List bytesPt = ptLogo.buffer.asUint8List();
+    final imgPtLogo = pw.MemoryImage(bytesPt);
+
+    final ByteData productLogo = await rootBundle.load('assets/images/gesits-logo.png');
+    final Uint8List bytesProduct = productLogo.buffer.asUint8List();
+    final imgProductLogo = pw.MemoryImage(bytesProduct);
+
+    if (await fileBuktiPengecekan.exists()) {
+      final buktiPengecekan = pw.MemoryImage(fileBuktiPengecekan.readAsBytesSync());
+
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return pw.Column(
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Image(imgPtLogo, height: 40),
+                    pw.Image(imgProductLogo, height: 40),
+                  ],
+                ),
+                pw.SizedBox(
+                  height: 30,
+                ),
+                pw.Table(
+                  border: pw.TableBorder.all(color: PdfColors.black),
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Nama Part',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Nama Supplier',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Tanggal Kedatangan',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Jumlah Total',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(namaPart),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(namaSupplier),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(tanggalKedatangan),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(jumlahTotal),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(
+                  height: 10,
+                ),
+                pw.Table(
+                  border: pw.TableBorder.all(color: PdfColors.black),
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Tanggal Pengecekan',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Jumlah OK',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Jumlah NG',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Catatan',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(tanggalPengecekan),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(jumlahOk),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(jumlahNg),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(catatan),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(
+                  height: 10,
+                ),
+                pw.Table(
+                  border: pw.TableBorder.all(color: PdfColors.black),
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Bukti Pengecekan',
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Image(buktiPengecekan, height: 200),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(
+                  height: 10,
+                ),
+                pw.Table(
+                  border: pw.TableBorder.all(color: PdfColors.black),
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Ditambahkan Oleh',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Status Validasi',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Divalidasi Oleh',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Tanggal Return',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(
+                            'Direturn Oleh',
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(ditambahkanOleh),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(statusValidasi),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(divalidasiOleh),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(tanggalReturn),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8.0),
+                          child: pw.Text(direturnOleh),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    return pdf.save();
+  }
+
+  String jenisPart = "Plastic Part";
+
+  Stream<QuerySnapshot> getDataPart() {
+    return FirebaseFirestore.instance.collection('raya_supplier').where('jenisPart', isEqualTo: jenisPart).snapshots();
+  }
+
+  String getSupplierForPart(String selectedPart, List<QueryDocumentSnapshot> documents) {
+    for (var doc in documents) {
+      if (doc['namaPart'] == selectedPart) {
+        return doc['namaSupplier'];
+      }
+    }
+    return "";
+  }
+
+  final _storage = FirebaseStorage.instance;
+  final _picker = ImagePicker();
+  File? _image;
+  final _filePath = '';
+
+  Future<void> _pickImage() async {
+    if (kIsWeb) {
+      _uploadFile(_filePath);
+    } else {
+      final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+        _uploadImage(_image);
+      }
+    }
+  }
+
+  Future<void> _uploadFile(String filePath) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg', 'heic'],
+      allowMultiple: false,
+    );
+    if (result != null && result.files.isNotEmpty) {
+      final fileBytes = result.files.first.bytes;
+      final fileName = result.files.first.name;
+      UploadTask uploadTask = FirebaseStorage.instance.ref('uploads/$fileName').putData(fileBytes!);
+
+      await uploadTask;
+
+      if (uploadTask.snapshot.state == TaskState.success) {
+        final String downloadURL = await FirebaseStorage.instance.ref('uploads/$fileName').getDownloadURL();
+        setState(() {
+          _buktiPengecekanController.text = downloadURL;
+        });
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to upload file'),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _uploadImage(File? imageFile) async {
+    if (imageFile == null) return;
+
+    final Reference storageReference = _storage.ref().child('images/${DateTime.now()}.jpg');
+    UploadTask uploadTask = storageReference.putFile(imageFile);
+
+    await uploadTask;
+
+    if (uploadTask.snapshot.state == TaskState.success) {
+      final String downloadURL = await storageReference.getDownloadURL();
+      setState(() {
+        _buktiPengecekanController.text = downloadURL;
+      });
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to upload image'),
+        ),
+      );
+    }
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   void _scrollDown() {
@@ -57,60 +551,6 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
     );
   }
 
-  var itemsNamaPart = [
-    "Backshield",
-    "Battery Partition",
-    "Bottom Seat",
-    "Box Battery",
-    "Bracket Lamp L",
-    "Bracket Lamp R",
-    "Cover Controller",
-    "Cover Shield",
-    "Extention License Plate Support",
-    "Front Fender",
-    "Front Shield",
-    "Front Side Cover L",
-    "Front Side Cover R",
-    "Headlight Holder",
-    "Hook",
-    "Inner Shield",
-    "Keel",
-    "Left Pocket",
-    "License Plate Support",
-    "Plug",
-    "Rear Bottom Cover",
-    "Rear Fender",
-    "Rear Side Cover L",
-    "Rear Side Cover R",
-    "Rider Platform",
-    "Tail Cover",
-    "Top Front Cover",
-    "Top Rear Cover",
-    "Under Seat",
-  ];
-
-  var itemsNamaSupplier = [
-    "PT WIKA Industri & Konstruksi",
-    "PT Art Wire",
-    "PT Niko Cahaya Elektrik",
-    "PT PINDAD",
-    "PT SUP",
-    "PT NKP",
-    "GEMATIC Co.,Ltd",
-    "PT MAXXIS",
-    "PT BATAVIA",
-    "PT FANDILA",
-    "PT YOKATA",
-    "PT Ganding Toolsindo",
-    "PT Rizki Dasa Prakasa",
-  ];
-
-  var itemsWarnaPart = [
-    "Hitam",
-    "Merah",
-    "Putih",
-  ];
-
   User? _user;
 
   @override
@@ -122,18 +562,17 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
         "Nama Part",
         "Nama Supplier",
         "Tanggal Kedatangan",
-        "Warna Part",
         "Jumlah Total",
         "Tanggal Pengecekan",
-        "Qty OK",
-        "Qty NG",
-        "Problem",
-        "URL",
-        "Tanggal Return",
-        "Ditambahkan Oleh",
-        "Diperiksa Oleh",
+        "Jumlah OK",
+        "Jumlah NG",
         "Catatan",
-        "Status",
+        "Bukti Pengecekan",
+        "Ditambahkan Oleh",
+        "Status Validasi",
+        "Divalidasi Oleh",
+        "Tanggal Return",
+        "Direturn Oleh",
       ]
     ];
 
@@ -144,57 +583,49 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
       });
     });
 
-    _qtyOkController.addListener(calculateSum);
-    _qtyNgController.addListener(calculateSum);
+    _jumlahOkController.addListener(calculateSum);
+    _jumlahNgController.addListener(calculateSum);
   }
 
   void calculateSum() {
-    final num qtyOk = num.tryParse(_qtyOkController.text) ?? 0;
-    final num qtyNg = num.tryParse(_qtyNgController.text) ?? 0;
-    final num result = qtyOk + qtyNg;
-    _jumlahTotalController.text = result.toString();
+    final num jumlahOk = num.tryParse(_jumlahOkController.text) ?? 0;
+    final num jumlahNg = num.tryParse(_jumlahNgController.text) ?? 0;
+    final num jumlahTotal = jumlahOk + jumlahNg;
+    _jumlahTotalController.text = jumlahTotal.toString();
   }
 
   @override
   void dispose() {
-    _qtyOkController.dispose();
-    _qtyNgController.dispose();
+    _jumlahOkController.dispose();
+    _jumlahNgController.dispose();
     super.dispose();
   }
 
   final _formKey = GlobalKey<FormState>();
 
   // Text fields controllers
-  final TextEditingController _searchTextNamaPartController =
-      TextEditingController();
-  final TextEditingController _searchTextTanggalKedatanganController =
-      TextEditingController();
-  final TextEditingController _searchTextTanggalPengecekanController =
-      TextEditingController();
+  final TextEditingController _searchTextNamaPartController = TextEditingController();
+  final TextEditingController _searchTextTanggalKedatanganController = TextEditingController();
+  final TextEditingController _searchTextTanggalPengecekanController = TextEditingController();
   final TextEditingController _namaPartController = TextEditingController();
   final TextEditingController _namaSupplierController = TextEditingController();
-  final TextEditingController _tanggalKedatanganController =
-      TextEditingController();
-  final TextEditingController _warnaPartController = TextEditingController();
+  final TextEditingController _tanggalKedatanganController = TextEditingController();
   final TextEditingController _jumlahTotalController = TextEditingController();
-  final TextEditingController _tanggalPengecekanController =
-      TextEditingController();
-  final TextEditingController _qtyOkController = TextEditingController();
-  final TextEditingController _qtyNgController = TextEditingController();
-  final TextEditingController _problemController = TextEditingController();
-  final TextEditingController _urlController = TextEditingController();
-  final TextEditingController _tanggalReturnController =
-      TextEditingController();
-  final TextEditingController _statusController = TextEditingController();
+  final TextEditingController _tanggalPengecekanController = TextEditingController();
+  final TextEditingController _jumlahOkController = TextEditingController();
+  final TextEditingController _jumlahNgController = TextEditingController();
   final TextEditingController _catatanController = TextEditingController();
-  final TextEditingController _ditambahkanOlehController =
-      TextEditingController();
-  final TextEditingController _diperiksaOlehController =
-      TextEditingController();
+  final TextEditingController _buktiPengecekanController = TextEditingController();
+  final TextEditingController _ditambahkanOlehController = TextEditingController();
+  final TextEditingController _statusValidasiController = TextEditingController();
+  final TextEditingController _divalidasiOlehController = TextEditingController();
+  final TextEditingController _tanggalReturnController = TextEditingController();
+  final TextEditingController _direturnOlehController = TextEditingController();
+  final TextEditingController _timeStampController = TextEditingController();
+  final TextEditingController _keteranganNotifikasiController = TextEditingController();
 
   // Firestore collection reference
-  final CollectionReference _rayaPlasticParts =
-      FirebaseFirestore.instance.collection("raya_plastic_parts");
+  final CollectionReference _rayaPlasticParts = FirebaseFirestore.instance.collection("raya_plastic_parts");
   List<DocumentSnapshot> documents = [];
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getDataFromFirestore() {
@@ -221,9 +652,342 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
     }
   }
 
-  // This function is triggered when floating button or one of the edit buttons is pressed
-  // Adding a product if no documentSnapshot is passed
-  // If documentSnapshot != null the update an existing product
+  Future<void> _detailView([DocumentSnapshot? documentSnapshot]) async {
+    if (documentSnapshot != null) {
+      await showGeneralDialog(
+        transitionDuration: const Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {
+          return Container();
+        },
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(
+              opacity: a1.value,
+              child: AlertDialog(
+                shape: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                title: ElevatedButton.icon(
+                  icon: const Icon(
+                    Icons.picture_as_pdf_outlined,
+                    size: 30,
+                  ),
+                  label: const Text(
+                    "Print",
+                  ),
+                  onPressed: () async {
+                    final documentId = documentSnapshot.id; // Ganti dengan documentId yang sesuai
+                    final document = await fetchDataById(documentId);
+                    final pdfBytes = await _createPDF(document);
+                    await Printing.layoutPdf(
+                      onLayout: (PdfPageFormat format) async => pdfBytes,
+                    );
+                    if (!mounted) return;
+                    if (kIsWeb) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PDFScreen(pdfBytes),
+                        ),
+                      );
+                    }
+                  },
+                ),
+                content: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Nama Part",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["namaPart"],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Nama Supplier",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["namaSupplier"],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Tanggal Kedatangan",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["tanggalKedatangan"],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Jumlah Total",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["jumlahTotal"].toString(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Tanggal Pengecekan",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["tanggalPengecekan"],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Jumlah OK",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["jumlahOk"].toString(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Jumlah NG",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["jumlahNg"].toString(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Catatan",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              documentSnapshot["catatan"],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Bukti Pengecekan",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 100,
+                              width: 200,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Linkify(
+                                  onOpen: _onOpen,
+                                  text: documentSnapshot["buktiPengecekan"],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 10,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HeroPhotoViewRouteWrapper(
+                                        imageProvider: NetworkImage(
+                                          documentSnapshot["buktiPengecekan"],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Hero(
+                                  tag: "someTag",
+                                  child: Image.network(
+                                    documentSnapshot["buktiPengecekan"],
+                                    width: 200,
+                                    loadingBuilder: (_, child, chunk) =>
+                                        chunk != null ? const Text("loading...") : child,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Ditambahkan Oleh",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  documentSnapshot["ditambahkanOleh"],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Status Validasi",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  documentSnapshot["statusValidasi"],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Divalidasi Oleh",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  documentSnapshot["divalidasiOleh"],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Tanggal Return",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  documentSnapshot["tanggalReturn"],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Direturn Oleh",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  documentSnapshot["direturnOleh"],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
   Future<void> _createOrUpdate([DocumentSnapshot? documentSnapshot]) async {
     String action = "create";
     if (documentSnapshot != null) {
@@ -232,18 +996,17 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
       _namaPartController.text = documentSnapshot["namaPart"];
       _namaSupplierController.text = documentSnapshot["namaSupplier"];
       _tanggalKedatanganController.text = documentSnapshot["tanggalKedatangan"];
-      _warnaPartController.text = documentSnapshot["warnaPart"];
       _jumlahTotalController.text = documentSnapshot["jumlahTotal"].toString();
       _tanggalPengecekanController.text = documentSnapshot["tanggalPengecekan"];
-      _qtyOkController.text = documentSnapshot["qtyOk"].toString();
-      _qtyNgController.text = documentSnapshot["qtyNg"].toString();
-      _problemController.text = documentSnapshot["problem"];
-      _urlController.text = documentSnapshot["url"];
-      _tanggalReturnController.text = documentSnapshot["tanggalReturn"];
-      _statusController.text = documentSnapshot["status"];
+      _jumlahOkController.text = documentSnapshot["jumlahOk"].toString();
+      _jumlahNgController.text = documentSnapshot["jumlahNg"].toString();
       _catatanController.text = documentSnapshot["catatan"];
+      _buktiPengecekanController.text = documentSnapshot["buktiPengecekan"];
       _ditambahkanOlehController.text = documentSnapshot["ditambahkanOleh"];
-      _diperiksaOlehController.text = documentSnapshot["diperiksaOleh"];
+      _statusValidasiController.text = documentSnapshot["statusValidasi"];
+      _divalidasiOlehController.text = documentSnapshot["divalidasiOleh"];
+      _tanggalReturnController.text = documentSnapshot["tanggalReturn"];
+      _direturnOlehController.text = documentSnapshot["direturnOleh"];
     }
 
     await showModalBottomSheet(
@@ -273,27 +1036,30 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          size: 30,
-                        ),
-                        tooltip: "Tutup",
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      Center(
-                        child: Text(
-                          action == "create" ? "Tambah Data" : "Update Data",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: action == "create"
-                                ? Colors.blue
-                                : Colors.indigo,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton.icon(
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 30,
+                            ),
+                            label: const Text(
+                              "Tutup",
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                           ),
-                        ),
+                          Text(
+                            action == "create" ? "Tambah Data" : "Update Data",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: action == "create" ? Colors.blue : Colors.indigo,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 20,
@@ -315,8 +1081,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -330,6 +1095,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       ],
                                     ),
                                     TextFormField(
+                                      readOnly: true,
                                       // The validator receives the text that the user has entered.
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -339,33 +1105,46 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       },
                                       controller: _namaPartController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
+                                        contentPadding: const EdgeInsets.all(10),
                                         labelText: "Nama Part",
-                                        hintText: "Masukkan Nama Part",
                                         prefixIcon: IconButton(
                                           onPressed: _namaPartController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
-                                        suffixIcon: PopupMenuButton<String>(
-                                          icon: const Icon(
-                                            Icons.arrow_drop_down,
-                                          ),
-                                          tooltip: "Pilih",
-                                          onSelected: (String value) {
-                                            _namaPartController.text = value;
-                                          },
-                                          itemBuilder: (BuildContext context) {
-                                            return itemsNamaPart
-                                                .map<PopupMenuItem<String>>(
-                                                    (String value) {
-                                              return PopupMenuItem(
-                                                value: value,
-                                                child: Text(
-                                                  value,
-                                                ),
-                                              );
-                                            }).toList();
+                                        suffixIcon: StreamBuilder<QuerySnapshot>(
+                                          stream: getDataPart(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) return const CircularProgressIndicator();
+
+                                            List<String> partOptions = [];
+                                            for (var doc in snapshot.data!.docs) {
+                                              partOptions.add(doc['namaPart']);
+                                            }
+
+                                            return PopupMenuButton<String>(
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                              ),
+                                              tooltip: "Pilih",
+                                              onSelected: (value) {
+                                                setState(() {
+                                                  _namaPartController.text = value.toString();
+                                                  // Dapatkan supplier dari Firestore dan isi TextField
+                                                  _namaSupplierController.text = getSupplierForPart(
+                                                    value.toString(),
+                                                    snapshot.data!.docs,
+                                                  );
+                                                });
+                                              },
+                                              itemBuilder: (BuildContext context) {
+                                                return partOptions.map((String value) {
+                                                  return PopupMenuItem<String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList();
+                                              },
+                                            );
                                           },
                                         ),
                                       ),
@@ -390,54 +1169,23 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "   * Opsional",
+                                          "   * Otomatis",
                                           style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.cyan,
                                           ),
-                                        ),
-                                        Text(
-                                          "Pilih   ↓",
                                         ),
                                       ],
                                     ),
                                     TextFormField(
+                                      readOnly: true,
                                       controller: _namaSupplierController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.all(10),
                                         labelText: "Nama Supplier",
-                                        hintText: "Masukkan Nama Supplier",
-                                        prefixIcon: IconButton(
-                                          onPressed:
-                                              _namaSupplierController.clear,
-                                          icon: const Icon(Icons.clear),
-                                        ),
-                                        suffixIcon: PopupMenuButton<String>(
-                                          icon: const Icon(
-                                            Icons.arrow_drop_down,
-                                          ),
-                                          tooltip: "Pilih",
-                                          onSelected: (String value) {
-                                            _namaSupplierController.text =
-                                                value;
-                                          },
-                                          itemBuilder: (BuildContext context) {
-                                            return itemsNamaSupplier
-                                                .map<PopupMenuItem<String>>(
-                                                    (String value) {
-                                              return PopupMenuItem(
-                                                value: value,
-                                                child: Text(
-                                                  value,
-                                                ),
-                                              );
-                                            }).toList();
-                                          },
-                                        ),
+                                        prefixIcon: Icon(Icons.settings_suggest_sharp),
                                       ),
                                     ),
                                   ],
@@ -460,8 +1208,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -484,14 +1231,10 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       },
                                       controller: _tanggalKedatanganController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
+                                        contentPadding: const EdgeInsets.all(10),
                                         labelText: "Tanggal Kedatangan",
-                                        hintText: "Masukkan Tanggal Kedatangan",
                                         prefixIcon: IconButton(
-                                          onPressed:
-                                              _tanggalKedatanganController
-                                                  .clear,
+                                          onPressed: _tanggalKedatanganController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -500,30 +1243,25 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                             Icons.calendar_today,
                                           ),
                                           onPressed: () async {
-                                            DateTime? pickedDate =
-                                                await showDatePicker(
+                                            DateTime? pickedDate = await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
-                                              // DateTime.now() - not to allow to choose before today.
                                               lastDate: DateTime(2101),
                                             );
 
                                             if (pickedDate != null) {
                                               if (kDebugMode) {
                                                 print(pickedDate);
-                                              } // pickedDate output format => 2021-03-10 00:00:00.000
+                                              }
                                               String formattedDate =
-                                                  DateFormat("yyyy-MM-dd")
-                                                      .format(pickedDate);
+                                                  DateFormat("yyyy-MM-dd, EEEE", 'id_ID').format(pickedDate);
                                               if (kDebugMode) {
                                                 print(formattedDate);
-                                              } // Formatted date output using intl package =>  2021-03-16
-                                              // You can implement different kind of Date Format here according to your requirement
+                                              }
 
                                               setState(() {
-                                                _tanggalKedatanganController
-                                                        .text =
+                                                _tanggalKedatanganController.text =
                                                     formattedDate; // Set output date to TextField value.
                                               });
                                             } else {
@@ -555,76 +1293,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "   * Opsional",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Pilih   ↓",
-                                        ),
-                                      ],
-                                    ),
-                                    TextFormField(
-                                      controller: _warnaPartController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "Warna Part",
-                                        hintText: "Masukkan Warna Part",
-                                        prefixIcon: IconButton(
-                                          onPressed: _warnaPartController.clear,
-                                          icon: const Icon(Icons.clear),
-                                        ),
-                                        suffixIcon: PopupMenuButton<String>(
-                                          icon: const Icon(
-                                            Icons.arrow_drop_down,
-                                          ),
-                                          tooltip: "Pilih",
-                                          onSelected: (String value) {
-                                            _warnaPartController.text = value;
-                                          },
-                                          itemBuilder: (BuildContext context) {
-                                            return itemsWarnaPart
-                                                .map<PopupMenuItem<String>>(
-                                                    (String value) {
-                                              return PopupMenuItem(
-                                                value: value,
-                                                child: Text(
-                                                  value,
-                                                ),
-                                              );
-                                            }).toList();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.lightBlue,
-                                  width: 2,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  children: [
-                                    const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Otomatis",
@@ -639,10 +1308,8 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       controller: _jumlahTotalController,
                                       decoration: const InputDecoration(
                                         contentPadding: EdgeInsets.all(10),
-                                        labelText: "Jumlah Total (OK + NG)",
-                                        hintText: "OK + NG",
-                                        prefixIcon:
-                                            Icon(Icons.settings_suggest_sharp),
+                                        labelText: "Jumlah Total",
+                                        prefixIcon: Icon(Icons.settings_suggest_sharp),
                                       ),
                                     ),
                                   ],
@@ -665,8 +1332,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -689,14 +1355,10 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       },
                                       controller: _tanggalPengecekanController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
+                                        contentPadding: const EdgeInsets.all(10),
                                         labelText: "Tanggal Pengecekan",
-                                        hintText: "Masukkan Tanggal Pengecekan",
                                         prefixIcon: IconButton(
-                                          onPressed:
-                                              _tanggalPengecekanController
-                                                  .clear,
+                                          onPressed: _tanggalPengecekanController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -705,30 +1367,25 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                             Icons.calendar_today_outlined,
                                           ),
                                           onPressed: () async {
-                                            DateTime? pickedDate =
-                                                await showDatePicker(
+                                            DateTime? pickedDate = await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime(2000),
-                                              // DateTime.now() - not to allow to choose before today.
                                               lastDate: DateTime(2101),
                                             );
 
                                             if (pickedDate != null) {
                                               if (kDebugMode) {
                                                 print(pickedDate);
-                                              } // pickedDate output format => 2021-03-10 00:00:00.000
+                                              }
                                               String formattedDate =
-                                                  DateFormat("yyyy-MM-dd")
-                                                      .format(pickedDate);
+                                                  DateFormat("yyyy-MM-dd, EEEE", 'id_ID').format(pickedDate);
                                               if (kDebugMode) {
                                                 print(formattedDate);
-                                              } // Formatted date output using intl package =>  2021-03-16
-                                              // You can implement different kind of Date Format here according to your requirement
+                                              }
 
                                               setState(() {
-                                                _tanggalPengecekanController
-                                                        .text =
+                                                _tanggalPengecekanController.text =
                                                     formattedDate; // Set output date to TextField value.
                                               });
                                             } else {
@@ -760,8 +1417,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -782,14 +1438,13 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                         FilteringTextInputFormatter.digitsOnly,
                                       ], // Only numbers can be entered
                                       keyboardType: TextInputType.number,
-                                      controller: _qtyOkController,
+                                      controller: _jumlahOkController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "Qty (OK)",
+                                        contentPadding: const EdgeInsets.all(10),
+                                        labelText: "Jumlah OK",
                                         hintText: "Masukkan Jumlah OK",
                                         prefixIcon: IconButton(
-                                          onPressed: _qtyOkController.clear,
+                                          onPressed: _jumlahOkController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                       ),
@@ -814,8 +1469,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Wajib diisi",
@@ -836,14 +1490,13 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                         FilteringTextInputFormatter.digitsOnly,
                                       ], // Only numbers can be entered
                                       keyboardType: TextInputType.number,
-                                      controller: _qtyNgController,
+                                      controller: _jumlahNgController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "Qty (NG)",
+                                        contentPadding: const EdgeInsets.all(10),
+                                        labelText: "Jumlah NG",
                                         hintText: "Masukkan Jumlah NG",
                                         prefixIcon: IconButton(
-                                          onPressed: _qtyNgController.clear,
+                                          onPressed: _jumlahNgController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                       ),
@@ -868,8 +1521,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "   * Opsional",
@@ -880,14 +1532,13 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       ],
                                     ),
                                     TextFormField(
-                                      controller: _problemController,
+                                      controller: _catatanController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "Problem",
-                                        hintText: "Masukkan Keterangan Problem",
+                                        contentPadding: const EdgeInsets.all(10),
+                                        labelText: "Catatan",
+                                        hintText: "Masukkan Catatan",
                                         prefixIcon: IconButton(
-                                          onPressed: _problemController.clear,
+                                          onPressed: _catatanController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                       ),
@@ -912,13 +1563,12 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                 child: Column(
                                   children: [
                                     const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "   * Opsional",
+                                          "   * Wajib diisi",
                                           style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.red,
                                           ),
                                         ),
                                         Text(
@@ -927,14 +1577,20 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       ],
                                     ),
                                     TextFormField(
-                                      controller: _urlController,
+                                      readOnly: true,
+                                      // The validator receives the text that the user has entered.
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Bukti Pengecekan tidak boleh kosong!';
+                                        }
+                                        return null;
+                                      },
+                                      controller: _buktiPengecekanController,
                                       decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "URL",
-                                        hintText: "Masukkan Link URL",
+                                        contentPadding: const EdgeInsets.all(10),
+                                        labelText: "Bukti Pengecekan",
                                         prefixIcon: IconButton(
-                                          onPressed: _urlController.clear,
+                                          onPressed: _buktiPengecekanController.clear,
                                           icon: const Icon(Icons.clear),
                                         ),
                                         suffixIcon: IconButton(
@@ -942,96 +1598,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                           icon: const Icon(
                                             Icons.cloud_upload,
                                           ),
-                                          onPressed: () async {
-                                            _launchURL();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: Colors.lightBlue,
-                                  width: 2,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  children: [
-                                    const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "   * Opsional",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Pilih   ↓",
-                                        ),
-                                      ],
-                                    ),
-                                    TextField(
-                                      readOnly: true,
-                                      controller: _tanggalReturnController,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.all(10),
-                                        labelText: "Tanggal Return",
-                                        hintText: "Masukkan Tanggal Return",
-                                        prefixIcon: IconButton(
-                                          onPressed:
-                                              _tanggalReturnController.clear,
-                                          icon: const Icon(Icons.clear),
-                                        ),
-                                        suffixIcon: IconButton(
-                                          tooltip: "Pilih",
-                                          icon: const Icon(
-                                            Icons.calendar_month_outlined,
-                                          ),
-                                          onPressed: () async {
-                                            DateTime? pickedDate =
-                                                await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
-                                              // DateTime.now() - not to allow to choose before today.
-                                              lastDate: DateTime(2101),
-                                            );
-
-                                            if (pickedDate != null) {
-                                              if (kDebugMode) {
-                                                print(pickedDate);
-                                              } // pickedDate output format => 2021-03-10 00:00:00.000
-                                              String formattedDate =
-                                                  DateFormat("yyyy-MM-dd")
-                                                      .format(pickedDate);
-                                              if (kDebugMode) {
-                                                print(formattedDate);
-                                              } // Formatted date output using intl package =>  2021-03-16
-                                              // You can implement different kind of Date Format here according to your requirement
-
-                                              setState(() {
-                                                _tanggalReturnController.text =
-                                                    formattedDate; // Set output date to TextField value.
-                                              });
-                                            } else {
-                                              if (kDebugMode) {
-                                                print("Date is not selected");
-                                              }
-                                            }
-                                          },
+                                          onPressed: _pickImage,
                                         ),
                                       ),
                                     ),
@@ -1043,9 +1610,9 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                               height: 20,
                             ),
                             SizedBox(
-                              width: 100,
+                              width: 130,
                               height: 50,
-                              child: OutlinedButton(
+                              child: OutlinedButton.icon(
                                 style: ButtonStyle(
                                   shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
@@ -1053,12 +1620,13 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                     ),
                                   ),
                                 ),
-                                child: Text(
+                                icon: Icon(
+                                  action == "create" ? Icons.add : Icons.edit,
+                                ),
+                                label: Text(
                                   action == "create" ? "Create" : "Update",
                                   style: TextStyle(
-                                    color: action == "create"
-                                        ? Colors.blue
-                                        : Colors.indigo,
+                                    color: action == "create" ? Colors.blue : Colors.indigo,
                                   ),
                                 ),
                                 onPressed: () async {
@@ -1073,17 +1641,14 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                     content: SizedBox(
                                       height: 100,
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             action == "create"
                                                 ? "Apakah Anda yakin ingin menambah data ini?"
                                                 : "Apakah Anda yakin ingin mengubah data ini?",
                                             style: TextStyle(
-                                              color: action == "create"
-                                                  ? Colors.blue
-                                                  : Colors.indigo,
+                                              color: action == "create" ? Colors.blue : Colors.indigo,
                                             ),
                                           ),
                                         ],
@@ -1093,103 +1658,74 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                       ElevatedButton(
                                         onPressed: () async {
                                           // Validate returns true if the form is valid, or false otherwise.
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            HapticFeedback.vibrate();
-                                            final String namaPart =
-                                                _namaPartController.text;
-                                            final String namaSupplier =
-                                                _namaSupplierController.text;
-                                            final String tanggalKedatangan =
-                                                _tanggalKedatanganController
-                                                    .text;
-                                            final String warnaPart =
-                                                _warnaPartController.text;
-                                            final num? jumlahTotal =
-                                                num.tryParse(
-                                                    _jumlahTotalController
-                                                        .text);
-                                            final String tanggalPengecekan =
-                                                _tanggalPengecekanController
-                                                    .text;
-                                            final num? qtyOk = num.tryParse(
-                                                _qtyOkController.text);
-                                            final num? qtyNg = num.tryParse(
-                                                _qtyNgController.text);
-                                            final String problem =
-                                                _problemController.text;
-                                            final String url =
-                                                _urlController.text;
-                                            final String tanggalReturn =
-                                                _tanggalReturnController.text;
-                                            final String status =
-                                                _statusController.text;
-                                            final String catatan =
-                                                _catatanController.text;
-                                            final String ditambahkanOleh =
-                                                _ditambahkanOlehController.text;
-                                            final String diperiksaOleh =
-                                                _diperiksaOlehController.text;
+                                          if (_formKey.currentState!.validate()) {
+                                            final String namaPart = _namaPartController.text;
+                                            final String namaSupplier = _namaSupplierController.text;
+                                            final String tanggalKedatangan = _tanggalKedatanganController.text;
+                                            final num? jumlahTotal = num.tryParse(_jumlahTotalController.text);
+                                            final String tanggalPengecekan = _tanggalPengecekanController.text;
+                                            final num? jumlahOk = num.tryParse(_jumlahOkController.text);
+                                            final num? jumlahNg = num.tryParse(_jumlahNgController.text);
+                                            final String catatan = _catatanController.text;
+                                            final String buktiPengecekan = _buktiPengecekanController.text;
+                                            final String ditambahkanOleh = _ditambahkanOlehController.text;
+                                            final String statusValidasi = _statusValidasiController.text;
+                                            final String divalidasiOleh = _divalidasiOlehController.text;
+                                            final String tanggalReturn = _tanggalReturnController.text;
+                                            final String direturnOleh = _direturnOlehController.text;
+                                            final String timeStamp = _timeStampController.text;
+                                            final String keteranganNotifikasi = _keteranganNotifikasiController.text;
 
                                             if (action == "create") {
-                                              // Persist a new product to Firestore
+                                              // Persist a new data to Firestore
                                               await _rayaPlasticParts.add({
                                                 "namaPart": namaPart,
                                                 "namaSupplier": namaSupplier,
-                                                "tanggalKedatangan":
-                                                    tanggalKedatangan,
-                                                "warnaPart": warnaPart,
+                                                "tanggalKedatangan": tanggalKedatangan,
                                                 "jumlahTotal": jumlahTotal,
-                                                "tanggalPengecekan":
-                                                    tanggalPengecekan,
-                                                "qtyOk": qtyOk,
-                                                "qtyNg": qtyNg,
-                                                "problem": problem,
-                                                "url": url,
-                                                "tanggalReturn": tanggalReturn,
-                                                "status": status,
+                                                "tanggalPengecekan": tanggalPengecekan,
+                                                "jumlahOk": jumlahOk,
+                                                "jumlahNg": jumlahNg,
                                                 "catatan": catatan,
-                                                "ditambahkanOleh":
-                                                    ditambahkanOleh,
-                                                "diperiksaOleh": diperiksaOleh,
+                                                "buktiPengecekan": buktiPengecekan,
+                                                "ditambahkanOleh": ditambahkanOleh,
+                                                "statusValidasi": statusValidasi,
+                                                "divalidasiOleh": divalidasiOleh,
+                                                "tanggalReturn": tanggalReturn,
+                                                "direturnOleh": direturnOleh,
+                                              });
+
+                                              await FirebaseFirestore.instance.collection('notifikasi').add({
+                                                "timeStamp": timeStamp,
+                                                "keteranganNotifikasi": keteranganNotifikasi,
                                               });
                                             }
 
                                             if (action == "update") {
-                                              // Update the product
-                                              await _rayaPlasticParts
-                                                  .doc(documentSnapshot!.id)
-                                                  .set({
+                                              // Update the data
+                                              await _rayaPlasticParts.doc(documentSnapshot!.id).set({
                                                 "namaPart": namaPart,
                                                 "namaSupplier": namaSupplier,
-                                                "tanggalKedatangan":
-                                                    tanggalKedatangan,
-                                                "warnaPart": warnaPart,
+                                                "tanggalKedatangan": tanggalKedatangan,
                                                 "jumlahTotal": jumlahTotal,
-                                                "tanggalPengecekan":
-                                                    tanggalPengecekan,
-                                                "qtyOk": qtyOk,
-                                                "qtyNg": qtyNg,
-                                                "problem": problem,
-                                                "url": url,
-                                                "tanggalReturn": tanggalReturn,
-                                                "status": status,
+                                                "tanggalPengecekan": tanggalPengecekan,
+                                                "jumlahOk": jumlahOk,
+                                                "jumlahNg": jumlahNg,
                                                 "catatan": catatan,
-                                                "ditambahkanOleh":
-                                                    ditambahkanOleh,
-                                                "diperiksaOleh": diperiksaOleh,
+                                                "buktiPengecekan": buktiPengecekan,
+                                                "ditambahkanOleh": ditambahkanOleh,
+                                                "statusValidasi": statusValidasi,
+                                                "divalidasiOleh": divalidasiOleh,
+                                                "tanggalReturn": tanggalReturn,
+                                                "direturnOleh": direturnOleh,
                                               });
                                             }
 
                                             // Show a snackbar
                                             if (!mounted) return;
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
+                                            ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
-                                                backgroundColor:
-                                                    action == "create"
-                                                        ? Colors.yellow
-                                                        : Colors.grey,
+                                                backgroundColor: action == "create" ? Colors.yellow : Colors.grey,
                                                 content: Text(
                                                   action == "create"
                                                       ? "Successfully create data!"
@@ -1204,16 +1740,13 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                             // Clear the text fields
                                             _namaPartController.text = "";
                                             _namaSupplierController.text = "";
-                                            _tanggalKedatanganController.text =
-                                                "";
+                                            _tanggalKedatanganController.text = "";
                                             _jumlahTotalController.text = "";
-                                            _tanggalPengecekanController.text =
-                                                "";
-                                            _qtyOkController.text = "";
-                                            _qtyNgController.text = "";
-                                            _problemController.text = "";
-                                            _urlController.text = "";
-                                            _tanggalReturnController.text = "";
+                                            _tanggalPengecekanController.text = "";
+                                            _jumlahOkController.text = "";
+                                            _jumlahNgController.text = "";
+                                            _catatanController.text = "";
+                                            _buktiPengecekanController.text = "";
 
                                             if (!mounted) return;
                                             // Hide the bottom sheet
@@ -1256,9 +1789,9 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
     );
   }
 
-  // Deleting a product by id
-  Future<void> _deleteProduct(String productId) async {
-    await _rayaPlasticParts.doc(productId).delete();
+  // Deleting a data by id
+  Future<void> _deleteData(String dataId) async {
+    await _rayaPlasticParts.doc(dataId).delete();
 
     if (!mounted) return;
     // Show a snackbar
@@ -1446,29 +1979,31 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
             builder: (context, snapshot) {
               var document = snapshot.data;
               return IconButton(
-                  tooltip: "Create",
-                  icon: const Icon(
-                    Icons.add,
-                  ),
-                  onPressed: () {
-                    // Clear the text fields
-                    _namaPartController.text = "";
-                    _namaSupplierController.text = "";
-                    _tanggalKedatanganController.text = "";
-                    _warnaPartController.text = "";
-                    _jumlahTotalController.text = "";
-                    _tanggalPengecekanController.text = "";
-                    _qtyOkController.text = "";
-                    _qtyNgController.text = "";
-                    _problemController.text = "";
-                    _urlController.text = "";
-                    _tanggalReturnController.text = "";
-                    _statusController.text = "Belum Disetujui Manager";
-                    _catatanController.text = "";
-                    _ditambahkanOlehController.text = document?["name"];
-                    _diperiksaOlehController.text = "";
-                    _createOrUpdate();
-                  });
+                tooltip: "Create",
+                icon: const Icon(
+                  Icons.add_circle_outlined,
+                ),
+                onPressed: () {
+                  // Clear the text fields
+                  _namaPartController.text = "";
+                  _namaSupplierController.text = "";
+                  _tanggalKedatanganController.text = "";
+                  _jumlahTotalController.text = "";
+                  _tanggalPengecekanController.text = "";
+                  _jumlahOkController.text = "";
+                  _jumlahNgController.text = "";
+                  _catatanController.text = "";
+                  _buktiPengecekanController.text = "";
+                  _ditambahkanOlehController.text = document?["name"];
+                  _statusValidasiController.text = "Belum Divalidasi";
+                  _divalidasiOlehController.text = "";
+                  _tanggalReturnController.text = "";
+                  _direturnOlehController.text = "";
+                  _timeStampController.text = "$currentDateTime";
+                  _keteranganNotifikasiController.text = "Data ditambahkan: Raya Plastic Part";
+                  _createOrUpdate();
+                },
+              );
             },
           ),
           Builder(
@@ -1478,7 +2013,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                 color: Colors.black,
               ),
               onPressed: () => Scaffold.of(context).openEndDrawer(),
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              tooltip: "Cari Data",
             ),
           ),
         ],
@@ -1591,8 +2126,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                   inputFormatters: <TextInputFormatter>[
                                     LengthLimitingTextInputFormatter(10),
                                   ],
-                                  controller:
-                                      _searchTextTanggalKedatanganController,
+                                  controller: _searchTextTanggalKedatanganController,
                                   onChanged: (value) {
                                     setState(() {
                                       searchTextTanggalKedatangan = value;
@@ -1616,8 +2150,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                                   inputFormatters: <TextInputFormatter>[
                                     LengthLimitingTextInputFormatter(10),
                                   ],
-                                  controller:
-                                      _searchTextTanggalPengecekanController,
+                                  controller: _searchTextTanggalPengecekanController,
                                   onChanged: (value) {
                                     setState(() {
                                       searchTextTanggalPengecekan = value;
@@ -1730,9 +2263,7 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
           getDataFromFirestore();
         },
         child: StreamBuilder<QuerySnapshot>(
-          stream: _rayaPlasticParts
-              .orderBy("tanggalPengecekan", descending: true)
-              .snapshots(),
+          stream: _rayaPlasticParts.orderBy("tanggalPengecekan", descending: true).snapshots(),
           builder: (ctx, streamSnapshot) {
             if (streamSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -1743,15 +2274,10 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
             }
 
             documents = (streamSnapshot.data!).docs;
-            // ToDo Documents list added to filterTitle
 
             if (searchTextNamaPart.isNotEmpty) {
               documents = documents.where((element) {
-                return element
-                    .get("namaPart")
-                    .toString()
-                    .toLowerCase()
-                    .contains(searchTextNamaPart.toLowerCase());
+                return element.get("namaPart").toString().toLowerCase().contains(searchTextNamaPart.toLowerCase());
               }).toList();
             }
 
@@ -1785,591 +2311,338 @@ class _RayaPlasticScreenOperatorState extends State<RayaPlasticScreenOperator> {
                   documentSnapshot.get("namaPart"),
                   documentSnapshot.get("namaSupplier"),
                   documentSnapshot.get("tanggalKedatangan"),
-                  documentSnapshot.get("warnaPart"),
                   documentSnapshot.get("jumlahTotal").toString(),
                   documentSnapshot.get("tanggalPengecekan"),
-                  documentSnapshot.get("qtyOk").toString(),
-                  documentSnapshot.get("qtyNg").toString(),
-                  documentSnapshot.get("problem"),
-                  documentSnapshot.get("url"),
-                  documentSnapshot.get("tanggalReturn"),
-                  documentSnapshot.get("ditambahkanOleh"),
-                  documentSnapshot.get("diperiksaOleh"),
+                  documentSnapshot.get("jumlahOk").toString(),
+                  documentSnapshot.get("jumlahNg").toString(),
                   documentSnapshot.get("catatan"),
-                  documentSnapshot.get("status"),
+                  documentSnapshot.get("buktiPengecekan"),
+                  documentSnapshot.get("ditambahkanOleh"),
+                  documentSnapshot.get("statusValidasi"),
+                  documentSnapshot.get("divalidasiOleh"),
+                  documentSnapshot.get("tanggalReturn"),
+                  documentSnapshot.get("direturnOleh"),
                 ]);
 
                 Map<String, double> dataMap = {
-                  "Quantity (OK)": documentSnapshot["qtyOk"].toDouble(),
-                  "Quantity (NG)": documentSnapshot["qtyNg"].toDouble(),
+                  "Jumlah OK": documentSnapshot["jumlahOk"].toDouble(),
+                  "Jumlah NG": documentSnapshot["jumlahNg"].toDouble(),
                 };
                 final colorList = <Color>[
                   Colors.blue,
                   Colors.red,
                 ];
-                return Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blueAccent,
-                      ),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Colors.green,
-                          Color.fromARGB(
-                            200,
-                            30,
-                            220,
-                            190,
-                          ),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                return Material(
+                  borderRadius: BorderRadius.circular(20),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => _detailView(documentSnapshot),
                     child: Padding(
                       padding: const EdgeInsets.all(4),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Colors.blue,
-                                    Color.fromARGB(
-                                      200,
-                                      30,
-                                      220,
-                                      190,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blueAccent,
+                          ),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Colors.green,
+                              Color.fromARGB(
+                                200,
+                                30,
+                                220,
+                                190,
+                              ),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Nama Part",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Tanggal Kedatangan",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Tanggal Pengecekan",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Column(
+                                      children: [
+                                        Text(
+                                          " : ",
+                                        ),
+                                        Text(
+                                          " : ",
+                                        ),
+                                        Text(
+                                          " : ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          documentSnapshot["namaPart"],
+                                        ),
+                                        Text(
+                                          documentSnapshot["tanggalKedatangan"],
+                                        ),
+                                        Text(
+                                          documentSnapshot["tanggalPengecekan"],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Text(
-                                  "Document ID: ${documentSnapshot.id}",
-                                  style: GoogleFonts.amiri(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white70,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      // Press this button to edit a single product
-                                      IconButton(
-                                        tooltip: "Update",
-                                        color: Colors.orange,
-                                        icon: const Icon(
-                                          Icons.edit_outlined,
-                                        ),
-                                        onPressed: () =>
-                                            _createOrUpdate(documentSnapshot),
-                                      ),
-                                      const SizedBox(
-                                        height: 40,
-                                      ),
-                                      // This icon button is used to delete a single product
-                                      IconButton(
-                                        tooltip: "Delete",
-                                        color: Colors.red,
-                                        icon: const Icon(
-                                          Icons.delete_outline,
-                                        ),
-                                        onPressed: () {
-                                          // Create a delete confirmation dialog
-                                          AlertDialog delete = AlertDialog(
-                                            title: const Text(
-                                              "Peringatan!",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold,
+                                Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 2,
                                               ),
+                                              color: Colors.yellow,
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
-                                            content: SizedBox(
-                                              height: 200,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                top: 32,
+                                                bottom: 32,
+                                                left: 40,
+                                                right: 40,
+                                              ),
+                                              child: PieChart(
+                                                dataMap: dataMap,
+                                                colorList: colorList,
+                                                animationDuration: const Duration(
+                                                  milliseconds: 3200,
+                                                ),
+                                                chartLegendSpacing: 32,
+                                                chartRadius: MediaQuery.of(context).size.width / 3.2,
+                                                initialAngleInDegree: 0,
+                                                chartType: ChartType.ring,
+                                                centerText: "Percentage",
+                                                ringStrokeWidth: 32,
+                                                legendOptions: const LegendOptions(
+                                                  showLegendsInRow: false,
+                                                  legendPosition: LegendPosition.bottom,
+                                                  showLegends: true,
+                                                  legendShape: BoxShape.rectangle,
+                                                  legendTextStyle: TextStyle(
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                ],
+                                                ),
+                                                chartValuesOptions: const ChartValuesOptions(
+                                                  showChartValueBackground: true,
+                                                  showChartValues: true,
+                                                  showChartValuesInPercentage: true,
+                                                  showChartValuesOutside: true,
+                                                  decimalPlaces: 2,
+                                                ),
                                               ),
                                             ),
-                                            actions: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  _deleteProduct(
-                                                      documentSnapshot.id);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text(
-                                                  "Ya",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white70,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              // Press this button to edit a single data
+                                              Padding(
+                                                padding: const EdgeInsets.all(4),
+                                                child: ElevatedButton.icon(
+                                                  label: const Text(
+                                                    "Update",
+                                                    style: TextStyle(
+                                                      color: Colors.orange,
+                                                    ),
+                                                  ),
+                                                  icon: const Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  onPressed: () => _createOrUpdate(documentSnapshot),
                                                 ),
                                               ),
-                                              TextButton(
-                                                child: const Text(
-                                                  "Tidak",
+                                              const SizedBox(
+                                                height: 30,
+                                              ),
+                                              // This icon button is used to delete a single data
+                                              Padding(
+                                                padding: const EdgeInsets.all(4),
+                                                child: ElevatedButton.icon(
+                                                  label: const Text(
+                                                    "Delete",
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                  icon: const Icon(
+                                                    Icons.delete_outline,
+                                                    color: Colors.red,
+                                                  ),
+                                                  onPressed: () {
+                                                    // Create a delete confirmation dialog
+                                                    AlertDialog delete = AlertDialog(
+                                                      title: const Text(
+                                                        "Peringatan!",
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      content: SizedBox(
+                                                        height: 150,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              "Yakin ingin menghapus data *${documentSnapshot["namaPart"]}* ?",
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            _deleteData(documentSnapshot.id);
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: const Text(
+                                                            "Ya",
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          child: const Text(
+                                                            "Tidak",
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) => delete,
+                                                    );
+                                                  },
                                                 ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
                                               ),
                                             ],
-                                          );
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => delete,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Nama Part",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Nama Supplier",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Tanggal Kedatangan",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Warna Part",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Jumlah Total (OK + NG)",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Tanggal Pengecekan",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Qty (OK)",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Qty (NG)",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Problem",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "URL",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Tanggal Return",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Column(
-                                  children: [
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                    Text(
-                                      " : ",
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      documentSnapshot["namaPart"],
-                                    ),
-                                    Text(
-                                      documentSnapshot["namaSupplier"],
-                                    ),
-                                    Text(
-                                      documentSnapshot["tanggalKedatangan"],
-                                    ),
-                                    Text(
-                                      documentSnapshot["warnaPart"],
-                                    ),
-                                    Text(
-                                      documentSnapshot["jumlahTotal"]
-                                          .toString(),
-                                    ),
-                                    Text(
-                                      documentSnapshot["tanggalPengecekan"],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      documentSnapshot["qtyOk"].toString(),
-                                    ),
-                                    Text(
-                                      documentSnapshot["qtyNg"].toString(),
-                                    ),
-                                    Text(
-                                      documentSnapshot["problem"],
-                                    ),
-                                    Linkify(
-                                      onOpen: _onOpen,
-                                      text: documentSnapshot["url"],
-                                    ),
-                                    Text(
-                                      documentSnapshot["tanggalReturn"],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white30,
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: Colors.lightBlue,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: Column(
+                                              children: [
+                                                const Text(
+                                                  "Status Validasi",
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white70,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(
+                                                          documentSnapshot["statusValidasi"] == "Belum Divalidasi"
+                                                              ? Icons.cancel_outlined
+                                                              : Icons.check_circle_outlined,
+                                                          color:
+                                                              documentSnapshot["statusValidasi"] == "Belum Divalidasi"
+                                                                  ? Colors.red
+                                                                  : Colors.green,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          documentSnapshot["statusValidasi"],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 2,
-                                          ),
-                                          color: Colors.yellow,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                            top: 32,
-                                            bottom: 32,
-                                            left: 40,
-                                            right: 40,
-                                          ),
-                                          child: PieChart(
-                                            dataMap: dataMap,
-                                            colorList: colorList,
-                                            animationDuration: const Duration(
-                                              milliseconds: 3200,
-                                            ),
-                                            chartLegendSpacing: 32,
-                                            chartRadius: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3.2,
-                                            initialAngleInDegree: 0,
-                                            chartType: ChartType.disc,
-                                            centerText: "Percentage",
-                                            ringStrokeWidth: 32,
-                                            legendOptions: const LegendOptions(
-                                              showLegendsInRow: false,
-                                              legendPosition:
-                                                  LegendPosition.bottom,
-                                              showLegends: true,
-                                              legendShape: BoxShape.rectangle,
-                                              legendTextStyle: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            chartValuesOptions:
-                                                const ChartValuesOptions(
-                                              showChartValueBackground: true,
-                                              showChartValues: true,
-                                              showChartValuesInPercentage: true,
-                                              showChartValuesOutside: true,
-                                              decimalPlaces: 2,
-                                            ),
-                                            // gradientList: ---To add gradient colors---
-                                            // emptyColorGradient: ---Empty Color gradient---
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.lightBlue,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Status",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white70,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Icon(
-                                                      documentSnapshot[
-                                                                  "status"] ==
-                                                              "Belum Disetujui Manager"
-                                                          ? Icons
-                                                              .cancel_outlined
-                                                          : Icons
-                                                              .check_circle_outlined,
-                                                      color: documentSnapshot[
-                                                                  "status"] ==
-                                                              "Belum Disetujui Manager"
-                                                          ? Colors.red
-                                                          : Colors.green,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text(
-                                                      documentSnapshot[
-                                                          "status"],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 40,
-                                ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.redAccent,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Ditambahkan Oleh",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white70,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Text(
-                                                  documentSnapshot[
-                                                      "ditambahkanOleh"],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.yellowAccent,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Diperiksa Oleh",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white70,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      documentSnapshot[
-                                                          "diperiksaOleh"],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white30,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.indigo,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Catatan Manager",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white70,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      documentSnapshot[
-                                                          "catatan"],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -2402,9 +2675,7 @@ generateCsv() async {
     html.Url.revokeObjectUrl(url);
   } else if (Platform.isAndroid) {
     Directory generalDownloadDir = Directory("storage/emulated/0/Download");
-    final File file = await (File(
-            "${generalDownloadDir.path}/Raya_Plastic_Parts_$formattedDate.csv")
-        .create());
+    final File file = await (File("${generalDownloadDir.path}/Raya_Plastic_Parts_$formattedDate.csv").create());
     await file.writeAsString(csvData);
   }
 }

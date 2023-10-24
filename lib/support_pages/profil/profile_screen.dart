@@ -32,8 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _roleController = TextEditingController();
 
   // Firestore collection reference
-  final CollectionReference _users =
-      FirebaseFirestore.instance.collection("users");
+  final CollectionReference _users = FirebaseFirestore.instance.collection("users");
 
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     String action = "";
@@ -249,10 +248,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                             ),
                           ),
-                          const Text(
-                            "* Email dan Posisi tidak dapat diubah",
-                            style: TextStyle(
-                              color: Colors.red,
+                          const SizedBox(
+                            height: 50,
+                            width: 200,
+                            child: Text(
+                              "* Email dan Posisi tidak dapat diubah",
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
                             ),
                           ),
                         ],

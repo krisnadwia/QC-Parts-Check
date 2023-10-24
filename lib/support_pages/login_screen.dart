@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:qc_parts_check/admin/bottom_navbar_admin.dart';
+import 'package:qc_parts_check/admin/register_screen_admin.dart';
 import 'package:qc_parts_check/manager/register_screen_manager.dart';
 import 'package:qc_parts_check/operator/register_screen_operator.dart';
 import 'package:qc_parts_check/operator/bottom_navbar_operator.dart';
@@ -15,8 +17,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
   // The indicator will show up when _isLoading = true.
   // The button will be unpressable, too.
   bool _isLoading = false;
@@ -78,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Login Operator/Manager",
+          "Login",
         ),
         flexibleSpace: Material(
           child: Container(
@@ -216,9 +217,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       if (value!.isEmpty) {
                                         return "Email tidak boleh kosong!";
                                       }
-                                      if (!RegExp(
-                                              "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                                          .hasMatch(value)) {
+                                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
                                         return ("Masukkan email yang valid!");
                                       } else {
                                         return null;
@@ -278,9 +277,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _isObscure
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
+                                          _isObscure ? Icons.visibility : Icons.visibility_off,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -300,9 +297,7 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                         Center(
                           child: ElevatedButton.icon(
-                            icon: _isLoading
-                                ? const CircularProgressIndicator()
-                                : const Icon(Icons.login),
+                            icon: _isLoading ? const CircularProgressIndicator() : const Icon(Icons.login),
                             label: Text(
                               _isLoading ? 'Loading...' : 'Login',
                               style: const TextStyle(fontSize: 20),
@@ -316,8 +311,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 route();
                               }
                             },
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(200, 50)),
+                            style: ElevatedButton.styleFrom(fixedSize: const Size(200, 50)),
                           ),
                         ),
                         const SizedBox(
@@ -331,82 +325,131 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        width: 150,
-                        child: Text(
-                          "Anda Operator dan Belum Punya Akun? Daftar Sekarang Juga!",
-                          textAlign: TextAlign.center,
+              Center(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.cyanAccent,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.all(20),
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () async {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const RegisterScreenOperator(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.greenAccent,
+                                padding: const EdgeInsets.all(20),
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
-                            );
-                          },
-                          child: const Text(
-                            "Register Operator",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        width: 150,
-                        child: Text(
-                          "Anda Manager dan Belum Punya Akun? Daftar Sekarang Juga!",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.all(20),
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () async {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const RegisterScreenManager(),
+                              onPressed: () async {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterScreenOperator(),
+                                  ),
+                                );
+                              },
+                              child: const Column(
+                                children: [
+                                  Text(
+                                    "Register",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Operator Incoming Area",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            );
-                          },
-                          child: const Text(
-                            "Register Manager",
-                            style: TextStyle(
-                              color: Colors.black,
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.greenAccent,
+                                padding: const EdgeInsets.all(20),
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterScreenManager(),
+                                  ),
+                                );
+                              },
+                              child: const Column(
+                                children: [
+                                  Text(
+                                    "Register",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Manager Quality Control",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.greenAccent,
+                                padding: const EdgeInsets.all(20),
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => const RegisterScreenAdmin(),
+                                  ),
+                                );
+                              },
+                              child: const Column(
+                                children: [
+                                  Text(
+                                    "Register",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Admin Perencanaan Pengendalian Operasi",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -417,11 +460,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   void route() {
     User? user = FirebaseAuth.instance.currentUser;
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
+    FirebaseFirestore.instance.collection("users").doc(user!.uid).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
         if (documentSnapshot.get("role") == "Operator") {
           Navigator.of(context).pushReplacement(
@@ -429,10 +468,16 @@ class _LoginScreenState extends State<LoginScreen>
               builder: (context) => const BottomNavbarOperator(),
             ),
           );
-        } else {
+        } else if (documentSnapshot.get("role") == "Manager") {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const BottomNavbarManager(),
+            ),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const BottomNavbarAdmin(),
             ),
           );
         }

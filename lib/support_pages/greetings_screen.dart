@@ -10,8 +10,7 @@ class GreetingsScreen extends StatefulWidget {
   State<GreetingsScreen> createState() => _GreetingsScreenState();
 }
 
-class _GreetingsScreenState extends State<GreetingsScreen>
-    with TickerProviderStateMixin {
+class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderStateMixin {
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -190,8 +189,7 @@ class _GreetingsScreenState extends State<GreetingsScreen>
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(40),
-                        backgroundColor:
-                            Colors.yellowAccent, // <-- Button color
+                        backgroundColor: Colors.yellowAccent, // <-- Button color
                         foregroundColor: Colors.blue, // <-- Splash color
                       ),
                       child: const Column(
