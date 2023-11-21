@@ -11,6 +11,8 @@ class GreetingsScreen extends StatefulWidget {
 }
 
 class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderStateMixin {
+  bool didPop = true;
+
   // Animation function
   late final AnimationController _controller = AnimationController(
     duration: const Duration(
@@ -33,8 +35,12 @@ class _GreetingsScreenState extends State<GreetingsScreen> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => showExitPopup(context),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        showExitPopup(context);
+        return;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: const Text(

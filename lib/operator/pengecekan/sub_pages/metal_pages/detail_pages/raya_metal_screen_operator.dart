@@ -623,6 +623,7 @@ class _RayaMetalScreenOperatorState extends State<RayaMetalScreenOperator> {
   final TextEditingController _direturnOlehController = TextEditingController();
   final TextEditingController _timeStampController = TextEditingController();
   final TextEditingController _keteranganNotifikasiController = TextEditingController();
+  final TextEditingController _telahDibacaController = TextEditingController();
 
   // Firestore collection reference
   final CollectionReference _rayaMetalParts = FirebaseFirestore.instance.collection("raya_metal_parts");
@@ -1675,6 +1676,7 @@ class _RayaMetalScreenOperatorState extends State<RayaMetalScreenOperator> {
                                             final String direturnOleh = _direturnOlehController.text;
                                             final String timeStamp = _timeStampController.text;
                                             final String keteranganNotifikasi = _keteranganNotifikasiController.text;
+                                            final String telahDibaca = _telahDibacaController.text;
 
                                             if (action == "create") {
                                               // Persist a new data to Firestore
@@ -1698,6 +1700,7 @@ class _RayaMetalScreenOperatorState extends State<RayaMetalScreenOperator> {
                                               await FirebaseFirestore.instance.collection('notifikasi').add({
                                                 "timeStamp": timeStamp,
                                                 "keteranganNotifikasi": keteranganNotifikasi,
+                                                "telahDibaca": telahDibaca,
                                               });
                                             }
 
@@ -2001,6 +2004,7 @@ class _RayaMetalScreenOperatorState extends State<RayaMetalScreenOperator> {
                   _direturnOlehController.text = "";
                   _timeStampController.text = "$currentDateTime";
                   _keteranganNotifikasiController.text = "Data ditambahkan: Raya Metal Part";
+                  _telahDibacaController.text = "false";
                   _createOrUpdate();
                 },
               );

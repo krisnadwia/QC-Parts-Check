@@ -14,6 +14,7 @@ class BottomNavbarAdmin extends StatefulWidget {
 class _BottomNavbarAdminState extends State<BottomNavbarAdmin> {
   int _selectedIndex = 0;
   late PageController _pageController;
+  bool didPop = true;
 
   @override
   void initState() {
@@ -29,8 +30,12 @@ class _BottomNavbarAdminState extends State<BottomNavbarAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => showLogoutPopup(context),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        showLogoutPopup(context);
+        return;
+      },
       child: Scaffold(
         extendBody: true,
         backgroundColor: Colors.transparent,

@@ -623,6 +623,7 @@ class _G1PlasticScreenOperatorState extends State<G1PlasticScreenOperator> {
   final TextEditingController _direturnOlehController = TextEditingController();
   final TextEditingController _timeStampController = TextEditingController();
   final TextEditingController _keteranganNotifikasiController = TextEditingController();
+  final TextEditingController _telahDibacaController = TextEditingController();
 
   // Firestore collection reference
   final CollectionReference _g1PlasticParts = FirebaseFirestore.instance.collection("g1_plastic_parts");
@@ -1675,6 +1676,7 @@ class _G1PlasticScreenOperatorState extends State<G1PlasticScreenOperator> {
                                             final String direturnOleh = _direturnOlehController.text;
                                             final String timeStamp = _timeStampController.text;
                                             final String keteranganNotifikasi = _keteranganNotifikasiController.text;
+                                            final String telahDibaca = _telahDibacaController.text;
 
                                             if (action == "create") {
                                               // Persist a new data to Firestore
@@ -1698,6 +1700,7 @@ class _G1PlasticScreenOperatorState extends State<G1PlasticScreenOperator> {
                                               await FirebaseFirestore.instance.collection('notifikasi').add({
                                                 "timeStamp": timeStamp,
                                                 "keteranganNotifikasi": keteranganNotifikasi,
+                                                "telahDibaca": telahDibaca,
                                               });
                                             }
 
@@ -2001,6 +2004,7 @@ class _G1PlasticScreenOperatorState extends State<G1PlasticScreenOperator> {
                   _direturnOlehController.text = "";
                   _timeStampController.text = "$currentDateTime";
                   _keteranganNotifikasiController.text = "Data ditambahkan: G1 Plastic Part";
+                  _telahDibacaController.text = "false";
                   _createOrUpdate();
                 },
               );
