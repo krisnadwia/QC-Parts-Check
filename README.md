@@ -6,6 +6,29 @@ Download this app: https://drive.google.com/drive/folders/1F4HYUtqOS3b-bjLJmVSWB
 <p>or</p>
 Access from web: https://qc-parts-check.web.app/ or https://qc-parts-check.firebaseapp.com/
 
+Screenshots
+-----------
+
+<img src="SS/1.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/2.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/3.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/4.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/5.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/6.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/7.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/8.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/9.png">&nbsp;&nbsp;&nbsp;
+
+<img src="SS/10.png">&nbsp;&nbsp;&nbsp;
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
